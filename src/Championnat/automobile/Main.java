@@ -1,6 +1,4 @@
 package Championnat.automobile;
-import java.util.ArrayList;
-import java.util.List;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Scanner;
@@ -9,6 +7,7 @@ public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         int choix;
+        System.out.println("Salut");
 
         // Création d'une instance de Course
         Course Coureur = new Course(1, "Course de test", 100, LocalDate.now(), BigDecimal.valueOf(1000));
@@ -123,7 +122,6 @@ public class Main {
         for (Pilote pilote : Coureur.listePilotes) {
             if (pilote.getId_pilote() == idPiloteASupprimer) {
                 piloteASupprimer = pilote;
-                break;
             }
         }
 
