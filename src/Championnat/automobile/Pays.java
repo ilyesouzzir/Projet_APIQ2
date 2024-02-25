@@ -154,4 +154,19 @@ public class Pays {
                 ", langue='" + langue + '\'' +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Pays pays = (Pays) o;
+
+        return id_pays == pays.id_pays;
+    }
+
+    @Override
+    public int hashCode() {
+        return id_pays;
+    }
 }

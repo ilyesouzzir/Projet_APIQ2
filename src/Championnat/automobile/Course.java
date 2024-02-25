@@ -1,12 +1,14 @@
 package Championnat.automobile;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 public class Course {
+    /**
+     * compteur d'incrementation pour l'identifiant idClassement
+     */
+    protected static int id_act = 1;
     /**
      * Identifiant unique de la course.
      */
@@ -42,15 +44,6 @@ public class Course {
      */
     private List<Classement> list_classement = new ArrayList<Classement>();
 
-    /**
-     * Liste des courses.
-     */
-    private List<Course> listeCourses = new ArrayList<Course>();
-
-    /**
-     * Liste des pilotes participant à la course.
-     */
-    protected List<Pilote> listePilotes = new ArrayList<Pilote>();
 
     // Constructeurs
 
@@ -206,58 +199,60 @@ public class Course {
     }
 
     /**
-     * Récupère la liste des courses.
-     *
-     * @return La liste des courses.
+     * Affiche la liste des pilotes avec leur place et leur gain total.
      */
-    public List<Course> getListeCourses() {
-        return listeCourses;
+    public void listePilotePlaceGain() {
+        System.out.println("Liste des pilotes avec leur place et leur gain :");
+        /**
+         * tri vu en C l'an dernier que j'ai appliqué en java
+         */
+        triSelection(list_classement);
+
+        for (Classement cl : list_classement) {
+            /**
+             *  Récupération du pilote associé à ce classement
+             */
+            Pilote pilote = cl.getPilote();
+            /**
+             *  Obtention de la place du pilote dans la course à partir du classement
+              */
+            int place = cl.getPlace();
+
+            System.out.println("Pilote: " + pilote.getNom() + " " +
+                    pilote.getPrenom() +
+                    ", Place: " + place + ", Gain du classement: " + cl.getGain());
+        }
+    }
+    /**
+     * Trie une liste de classement par ordre croissant en utilisant l'algorithme de tri par sélection.
+     *
+     * @param list La liste de classement à trier.
+     */
+    public void triSelection(List<Classement> list) {
+        int n = list.size();
+
+        /**
+         *  Parcours de tous les éléments sauf le dernier
+          */
+
+        for (int i = 0; i < n - 1; i++) {
+            int minIndex = i;
+
+            for (int j = i + 1; j < n; j++) {
+                if (list.get(j).getPlace() < list.get(minIndex).getPlace()) {
+                    minIndex = j;
+                }
+            }
+            /**
+             *  Échange des éléments pour placer le minimum à la bonne position
+              */
+
+            Classement temp = list.get(minIndex);
+            list.set(minIndex, list.get(i));
+            list.set(i, temp);
+        }
     }
 
-    /**
-     * Définit la liste des courses.
-     *
-     * @param listeCourses La liste des courses.
-     */
-    public void setListeCourses(List<Course> listeCourses) {
-        this.listeCourses = listeCourses;
-    }
-
-    /**
-     * Récupère la liste des pilotes participant à la course.
-     *
-     * @return La liste des pilotes participant à la course.
-     */
-    public List<Pilote> getListePilotes() {
-        return listePilotes;
-    }
-
-    /**
-     * Définit la liste des pilotes participant à la course.
-     *
-     * @param listePilotes La liste des pilotes participant à la course.
-     */
-    public void setListePilotes(List<Pilote> listePilotes) {
-        this.listePilotes = listePilotes;
-    }
-
-    /**
-     * Ajoute un pilote à la liste des pilotes participant à la course.
-     *
-     * @param pilote Le pilote à ajouter.
-     */
-    public void addPilote(Pilote pilote) {
-        listePilotes.add(pilote);
-    }
-
-    /**
-     * Supprime un pilote de la liste des pilotes participant à la course.
-     *
-     * @param pilote Le pilote à supprimer.
-     */
-    public void supPilote(Pilote pilote) {
-        listePilotes.remove(pilote);
-    }
 
     /**
      * Calcule le gain total de la course.
@@ -273,6 +268,30 @@ public class Course {
             total = total.add(cl.gain);
         }
         return total;
+    }
+    /**
+     * methode qui cherche tous les pays des pilotes qui participent Ã
+     la course et les stocke 1 seule fois
+     * @return liste la liste des pays
+     */
+    public List<Pays> listePaysPilotes() {
+        List<Pays> listePays= new ArrayList<>();
+        /**
+         * Parcourir de la liste des classements
+         */
+        for (Classement c : list_classement) {
+            /**
+             * Récupère le pays du pilote
+             */
+            Pays pays = c.Pilote.pays;
+            /**
+             * vérifie si le pays est déja présent dans la liste
+             */
+            if (!listePays.contains(pays)) {
+                listePays.add(pays);
+            }
+        }
+        return listePays;
     }
 
     /**
@@ -291,62 +310,53 @@ public class Course {
     }
 
     /**
-     * Affiche la liste des pilotes du pays de la course.
+     * Ajoute un classement correspondant à un pilote spécifié.
+     *
+     * @param pilote Le pilote pour lequel un classement doit être ajouté.
      */
-    public void ListePiloteDuPays() {
-        System.out.println("Liste des pilotes du pays de la course :");
+    public void addPilote(Pilote pilote) {
+        /**
+         * Crée un nouveau classement pour le pilote spécifié et l'ajoute à la liste de classement.
+         */
+        Classement nvPilote = new Classement();
+        nvPilote.setPilote(pilote);
+        list_classement.add(nvPilote);
+    }
 
-        Pays paysCourse = ville.getPays();
-
-        for (Pilote pilote : listePilotes) {
-            if (paysCourse.equals(pilote.getPays())) {
-                System.out.println("Nom: " + pilote.getNom() + ", Prénom: " + pilote.getPrenom());
+    /**
+     * Supprime le classement du pilote spécifié.
+     *
+     * @param pilote
+     * Le pilote dont le classement doit être supprimé.
+     */
+    public void supPilote(Pilote pilote) {
+        /**
+         * Cherche le pilote dans le classement et supprime son classement s'il est trouvé.
+         */
+        for (Classement cl : list_classement) {
+            if (cl.getPilote().equals(pilote)) {
+                list_classement.remove(cl);
             }
         }
     }
 
+
     /**
-     * Affiche la liste des pilotes avec leur place et leur gain total.
+     * Affiche le résultat d'un pilote dans la course.
+     *
+     * @param pilote Le pilote dont le résultat doit être affiché.
+     * @param place  La place du pilote dans la course.
+     * @param gain   Le gain associé au résultat du pilote.
      */
-    public void listePilotePlaceGain() {
-        System.out.println("Liste des pilotes avec leur place et leur gain :");
-        /**
-         * tri
-         */
-        list_classement.sort(Comparator.comparing(Classement::getPlace));
+    public Classement resultat(Pilote pilote, int place, BigDecimal gain) {
+        Classement classement = new Classement();
+        classement.setPilote(pilote);
+        classement.setPlace(place);
+        classement.setGain(gain);
+        this.list_classement.add(classement);
 
-        for (Classement cl : list_classement) {
-            /**
-             * Récupère le pilote associé à ce classement
-              */
-            Pilote pilote = cl.getPilote();
-
-            /**
-             * Obtient la place du pilote dans la course à partir du classement
-              */
-            int place = cl.getPlace();
-
-
-            System.out.println("Pilote: " + pilote.getNom() + " " + pilote.getPrenom() +
-                    ", Place: " + place +
-                    ", Gain du classement: " + cl.getGain());
-        }
-
-
+        return classement;
     }
-
-
-    public boolean classementComplet() {
-        /**
-         * vérifie si le classement de la course est complet en comparant le nombre de pilotes participant à la course
-         * avec le nombre de classements enregistrés pour cette course
-         * Elle retourne true si tous les pilotes ont un classement enregistré, c'est-à-dire si le nombre de pilotes est égal au nombre de classements.
-         * Sinon, elle retourne false, indiquant que le classement n'est pas complet.
-          */
-
-        return listePilotes.size() == list_classement.size();
-    }
-
 
     /**
      * Modifie le classement d'un pilote dans la course.
@@ -362,67 +372,51 @@ public class Course {
         for (Classement cl : list_classement) {
             if (cl.getPilote().equals(pilote)) {
                 /**
-                 * Mettre à jour le classement existant si le pilote est déjà classé
-                  */
+                 * Mettre Ã  jour le classement existant si le pilote
+                 est dÃ©jÃ  classÃ©
+                 */
                 cl.setPlace(place);
                 cl.setGain(gain);
                 return;
             }
         }
     }
-
     /**
-     * Affiche le résultat d'un pilote dans la course.
+     * Affiche la liste des pilotes du pays de la course et retourne cette liste.
      *
-     * @param pilote Le pilote dont le résultat doit être affiché.
-     * @param place  La place du pilote dans la course.
-     * @param gain   Le gain associé au résultat du pilote.
+     * @return La liste des pilotes du pays de la course.
      */
-    public void resultat(Pilote pilote, int place, BigDecimal gain) {
-        Classement classement = new Classement();
-        classement.setPilote(pilote);
-        classement.setPlace(place);
-        classement.setGain(gain);
-        this.list_classement.add(classement);
-
-
+    public List<Pilote> ListePiloteDuPays() {
+        System.out.println("Liste des pilotes du pays de la course :");
+        Pays paysCourse = ville.getPays();
+        List<Pilote> listePilote = new ArrayList<>();
+        for (Classement cl : list_classement) {
+            Pays pays = cl.getPilote().getPays();
+            if (paysCourse.equals(pays)) {
+                listePilote.add(cl.getPilote());
+            }
+        }
+        return listePilote;
     }
 
     /**
-     * Renvoie la liste des pays des pilotes participant à la course.
+     * Vérifie si le classement est complet en parcourant tous les éléments du classement.
+     * Un classement est considéré comme complet si toutes les places sont attribuées.
      *
-     * @return La liste des pays des pilotes.
+     * @return true si le classement est complet, sinon false.
      */
-    public List<Pays> listePaysPilotes() {
-        List<Pays> paysPilotes = new ArrayList<>();
-
-        /**
-         * Parcourir de la liste des pilotes
-          */
-        for (Pilote pilote : listePilotes) {
-            Pays paysPilote = pilote.getPays();
-            boolean paysExiste = false;
-
-            /**
-             *  Vérifie si le pays du pilote existe déjà dans la liste
-              */
-            for (Pays pays : paysPilotes) {
-                if (pays.equals(paysPilote)) {
-                    paysExiste = true;
-                    break;
-                }
-            }
-
-            /**
-             * Si le pays du pilote n'existe pas déjà dans la liste, on l'ajoute
-              */
-            if (!paysExiste) {
-                paysPilotes.add(paysPilote);
+    public boolean classementComplet() {
+        for (Classement cl : list_classement) {
+            if (cl.getPlace() == 0) {
+                return false;
             }
         }
 
-        return paysPilotes;
+        return true;
     }
+
+
+
 
     @Override
     public String toString() {
