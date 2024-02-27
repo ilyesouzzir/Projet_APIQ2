@@ -69,8 +69,7 @@ public class Course {
         this.dateCourse = dateCourse;
         this.priceMoney = priceMoney;
     }
-
-    // Méthodes publiques
+    
 
     /**
      * Récupère l'identifiant de la course.
@@ -198,30 +197,19 @@ public class Course {
         this.ville = ville;
     }
 
-    /**
-     * Affiche la liste des pilotes avec leur place et leur gain total.
-     */
-    public void listePilotePlaceGain() {
-        System.out.println("Liste des pilotes avec leur place et leur gain :");
+
+    public List<Classement> listePilotePlaceGain() {
         /**
-         * tri vu en C l'an dernier que j'ai appliqué en java
-         */
+         *  Tri des classements grace au tri séléction que j'ai appliqué
+          */
+
         triSelection(list_classement);
 
-        for (Classement cl : list_classement) {
-            /**
-             *  Récupération du pilote associé à ce classement
-             */
-            Pilote pilote = cl.getPilote();
-            /**
-             *  Obtention de la place du pilote dans la course à partir du classement
-              */
-            int place = cl.getPlace();
-
-            System.out.println("Pilote: " + pilote.getNom() + " " +
-                    pilote.getPrenom() +
-                    ", Place: " + place + ", Gain du classement: " + cl.getGain());
-        }
+        /**
+         * Retourner simplement la liste des classements triés
+          */
+        
+        return list_classement;
     }
     /**
      * Trie une liste de classement par ordre croissant en utilisant l'algorithme de tri par sélection.
@@ -352,6 +340,12 @@ public class Course {
         Classement classement = new Classement();
         classement.setPilote(pilote);
         classement.setPlace(place);
+        /**
+         * si le pilote abandonne sa place vaudra -1
+          */
+        if (place == -1) {
+            System.out.println("Le pilote " + pilote.getNom() + " a abandonné la course.");
+        }
         classement.setGain(gain);
         this.list_classement.add(classement);
 
