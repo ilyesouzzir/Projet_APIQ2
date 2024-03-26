@@ -1,8 +1,12 @@
 package Championnat.automobile;
+import myconnections.DBConnection;
+
 import java.math.BigDecimal;
+import java.sql.Connection;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Course {
     /**
@@ -197,7 +201,6 @@ public class Course {
         this.ville = ville;
     }
 
-
     public List<Classement> listePilotePlaceGain() {
         /**
          *  Tri des classements grace au tri séléction que j'ai appliqué
@@ -373,6 +376,7 @@ public class Course {
                 cl.setGain(gain);
                 return;
             }
+
         }
     }
     /**
@@ -408,9 +412,6 @@ public class Course {
 
         return true;
     }
-
-
-
 
     @Override
     public String toString() {
