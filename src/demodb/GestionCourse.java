@@ -72,15 +72,25 @@ public class GestionCourse {
         BigDecimal priceMoney = sc.nextBigDecimal();
 
         String query1 = "insert into APICourse(IDCOURSE, NOM, KM, DATECOURSE, PRICEMONEY) values(?,?,?,?,?)";
-        try (PreparedStatement pstm = dbConnect.prepareStatement(query1)) {
-            pstm.setInt(1, id_act);
-            pstm.setString(2, nom_course);
-            pstm.setInt(3, km);
-            pstm.setDate(4, Date.valueOf(dateCourse));
-            pstm.setBigDecimal(5, priceMoney);
-            int nl = pstm.executeUpdate();
-            System.out.println(nl + " course insérée");
-            id_act++;
+        String query2 = "select IDCOURSE from APICOURSE where nom= ?";
+        try(PreparedStatement pstm1= dbConnect.prepareStatement(query1);
+            PreparedStatement pstm2= dbConnect.prepareStatement(query2);
+        ) {
+            pstm1.setString(2, nom_course);
+            pstm1.setInt(3, km);
+            pstm1.setDate(4, Date.valueOf(dateCourse));
+            pstm1.setBigDecimal(5, priceMoney);
+            int nvl = pstm1.executeUpdate();
+            System.out.println(nvl + " course insérée");
+            if(nvl == 1) {
+                pstm2.setString(1, nom_course);
+                ResultSet rs= pstm2.executeQuery();
+                if(rs.next()){
+                    int IDCOURSE= rs.getInt(1);
+                    System.out.println("IDCOURSE = "+IDCOURSE);
+                }
+                else System.out.println("record introuvable");
+            }
         } catch (SQLException e) {
             System.out.println("erreur sql :" + e);
         }
