@@ -71,15 +71,15 @@ public class GestionCourse {
         System.out.println("priceMoney  : ");
         BigDecimal priceMoney = sc.nextBigDecimal();
 
-        String query1 = "insert into APICourse(IDCOURSE, NOM, KM, DATECOURSE, PRICEMONEY) values(?,?,?,?,?)";
-        String query2 = "select IDCOURSE from APICOURSE where nom= ?";
+        String query1 = "insert into APICourse( NOM, KM, DATECOURSE, PRICEMONEY) values(?,?,?,?)";
+        String query2 = "select IDCOURSE from APICOURSE where NOM= ?";
         try(PreparedStatement pstm1= dbConnect.prepareStatement(query1);
             PreparedStatement pstm2= dbConnect.prepareStatement(query2);
         ) {
-            pstm1.setString(2, nom_course);
-            pstm1.setInt(3, km);
-            pstm1.setDate(4, Date.valueOf(dateCourse));
-            pstm1.setBigDecimal(5, priceMoney);
+            pstm1.setString(1, nom_course);
+            pstm1.setInt(2, km);
+            pstm1.setDate(3, Date.valueOf(dateCourse));
+            pstm1.setBigDecimal(4, priceMoney);
             int nvl = pstm1.executeUpdate();
             System.out.println(nvl + " course insérée");
             if(nvl == 1) {
