@@ -1,4 +1,4 @@
-package Championnat.automobile;
+package metier;
 
 /**
  * Cette classe représente une ville dans le contexte du championnat automobile.

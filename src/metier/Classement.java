@@ -1,4 +1,4 @@
-package Championnat.automobile;
+package metier;
 
 import java.math.BigDecimal;
 

@@ -1,9 +1,9 @@
-package Championnat.automobile;
+package DesginPatterns.composite;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 public class Pilote {
 
@@ -180,6 +180,18 @@ public class Pilote {
                 ", prenom='" + prenom + '\'' +
                 ", datenaiss=" + datenaiss +
                 '}';
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Pilote pilote = (Pilote) o;
+        return id_pilote == pilote.id_pilote;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id_pilote);
     }
 
 }

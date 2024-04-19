@@ -1,6 +1,5 @@
 package demodb;
 
-import Championnat.automobile.Course;
 import myconnections.DBConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
