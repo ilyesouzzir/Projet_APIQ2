@@ -1,17 +1,19 @@
+package  MVC.Controller;
 
-/*
-package MVC.Controller;
-import metier.Ville;
-import MVC.Model.VilleDAO;
+
+import MVC.Model.DAOVille;
+
 import MVC.View.VilleAbstractView;
+import metier.Ville;
+
 
 import java.util.List;
 
 public class VilleController {
-    private VilleDAO model;
+    private DAOVille model;
     private VilleAbstractView view;
 
-    public VilleController(VilleDAO model, VilleAbstractView view) {
+    public VilleController(DAOVille model, VilleAbstractView view) {
         this.model = model;
         this.view = view;
         this.view.setController(this);
@@ -22,7 +24,7 @@ public class VilleController {
     }
 
     public Ville addVille(Ville ville) {
-        return model.addVille(ville);
+        return  model.addVille(ville);
     }
 
     public boolean removeVille(Ville ville) {
@@ -36,6 +38,5 @@ public class VilleController {
     public Ville search(int idVille) {
         return model.readVille(idVille);
     }
-}
 
- */
+}
