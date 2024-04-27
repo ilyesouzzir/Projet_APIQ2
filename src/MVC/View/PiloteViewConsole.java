@@ -1,14 +1,15 @@
 package MVC.View;
 
-import MVC.View.PaysAbstractView;
-import metier.Pays;
+import MVC.View.PiloteAbstractView;
+import metier.Pilote;
 import static utilitaires.Utilitaire.*;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
-public class PaysViewConsole extends PaysAbstractView {
+public class PiloteViewConsole extends PiloteAbstractView {
     private Scanner sc = new Scanner(System.in);
 
     @Override
@@ -18,7 +19,7 @@ public class PaysViewConsole extends PaysAbstractView {
 
     @Override
     public void menu() {
-        update(paysController.getAll());
+        update(piloteController.getAll());
         do {
             int ch = choixListe(Arrays.asList("ajout", "retrait", "rechercher", "modifier", "fin"));
             switch (ch) {
@@ -47,48 +48,51 @@ public class PaysViewConsole extends PaysAbstractView {
 
     private void modifier() {
         int nl = choixElt(lp) - 1;
-        Pays pays = lp.get(nl);
-        String sigle = modifyIfNotBlank("sigle", pays.getSigle());
-        String nom = modifyIfNotBlank("nom", pays.getNom());
-        String langue = modifyIfNotBlank("langue", pays.getLangue());
-        Pays p = paysController.updatePays(new Pays(sigle, nom, langue));
+        Pilote pilote = lp.get(nl);
+        String matricule = modifyIfNotBlank("matricule", pilote.getMatricule());
+        String nom = modifyIfNotBlank("nom", pilote.getNom());
+        String prenom = modifyIfNotBlank("prenom", pilote.getPrenom());
+        LocalDate datenaiss = LocalDate.parse(modifyIfNotBlank("datenaiss", pilote.getDatenaiss().toString()));
+        Pilote p = piloteController.updatePilote(new Pilote(pilote.getId_pilote(), matricule, nom, prenom, datenaiss));
         if(p == null) affMsg("mise à jour infructueuse");
         else affMsg("mise à jour effectuée : "+p);
     }
 
     private void rechercher() {
-        System.out.println("id_pays : ");
-        int idPays = sc.nextInt();
-        Pays p = paysController.search(idPays);
+        System.out.println("id_pilote : ");
+        int idPilote = sc.nextInt();
+        Pilote p = piloteController.search(idPilote);
         if(p == null) affMsg("recherche infructueuse");
         else affMsg(p.toString());
     }
 
     private void retirer() {
         int nl = choixElt(lp) - 1;
-        Pays pays = lp.get(nl);
-        boolean ok = paysController.removePays(pays);
-        if(ok) affMsg("pays effacé");
-        else affMsg("pays non effacé");
+        Pilote pilote = lp.get(nl);
+        boolean ok = piloteController.removePilote(pilote);
+        if(ok) affMsg("pilote effacé");
+        else affMsg("pilote non effacé");
     }
 
     private void ajouter() {
-        System.out.print("sigle : ");
-        String sigle = sc.nextLine();
-        System.out.print("nom: ");
+        System.out.print("matricule : ");
+        String matricule = sc.nextLine();
+        System.out.print("nom : ");
         String nom = sc.nextLine();
-        System.out.print("langue: ");
-        String langue = sc.nextLine();
-        Pays p = paysController.addPays(new Pays(sigle, nom, langue));
+        System.out.print("prenom: ");
+        String prenom = sc.nextLine();
+        System.out.print("datenaiss: ");
+        LocalDate datenaiss = LocalDate.parse(sc.nextLine());
+        Pilote p = piloteController.addPilote(new Pilote(0, matricule, nom, prenom, datenaiss));
         if(p != null) affMsg("création de :"+p);
         else affMsg("erreur de création");
     }
 
     @Override
-    public Pays selectionner() {
-        update(paysController.getAll());
+    public Pilote selectionner() {
+        update(piloteController.getAll());
         int nl = choixListe(lp);
-        Pays pays = lp.get(nl - 1);
-        return pays;
+        Pilote pilote = lp.get(nl - 1);
+        return pilote;
     }
 }
