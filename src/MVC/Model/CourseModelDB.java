@@ -21,22 +21,17 @@ public class CourseModelDB extends DAOCourse {
     }
     @Override
     public Course addCourse(Course course) {
-        String query1 = "insert into APICOURSE(nom,km,dateCourse,priceMoney) values(?,?,?,?)";
-        String query2 = "select idCourse from APICOURSE where nom = ? ";
-        try (PreparedStatement pstm1 = dbConnect.prepareStatement(query1, Statement.RETURN_GENERATED_KEYS);
-             PreparedStatement pstm2 = dbConnect.prepareStatement(query2)) {
+        String query1 = "insert into APICOURSE(nom,km,dateCourse,priceMoney) values(?,?,?,?,?,?)";
+        try (PreparedStatement pstm1 = dbConnect.prepareStatement(query1, Statement.RETURN_GENERATED_KEYS)) {
             pstm1.setString(1, course.getNom());
             pstm1.setInt(2, course.getKm());
             pstm1.setDate(3, java.sql.Date.valueOf(course.getDateCourse()));
             pstm1.setBigDecimal(4, course.getPriceMoney());
+
+
             int n = pstm1.executeUpdate();
             if(n==1){
-                pstm2.setString(1, course.getNom());
-                pstm2.setInt(2, course.getKm());
-                pstm2.setDate(3, java.sql.Date.valueOf(course.getDateCourse()));
-                pstm2.setBigDecimal(4, course.getPriceMoney());
-
-                ResultSet rs = pstm2.executeQuery();
+                ResultSet rs = pstm1.getGeneratedKeys();
                 if(rs.next()){
                     int idCourse = rs.getInt(1);
                     course.setId_course(idCourse);
@@ -57,7 +52,7 @@ public class CourseModelDB extends DAOCourse {
     }
     @Override
     public boolean removeCourse(Course course) {
-        String query = "delete from APICOURSE where id_course = ?";
+        String query = "delete from APICOURSE where idcourse = ?";
         try(PreparedStatement pstm = dbConnect.prepareStatement(query)) {
             pstm.setInt(1, course.getId_course());
             int n = pstm.executeUpdate();
@@ -70,7 +65,7 @@ public class CourseModelDB extends DAOCourse {
     }
     @Override
     public Course updateCourse(Course course) {
-        String query = "update APICOURSE set nom =?, km=?, dateCourse=?, priceMoney=? where id_course = ?";
+        String query = "update APICOURSE set nom =?, km=?, dateCourse=?, priceMoney=? where idcourse = ?";
         try(PreparedStatement pstm = dbConnect.prepareStatement(query)) {
             pstm.setString(1, course.getNom());
             pstm.setInt(2, course.getKm());
@@ -89,7 +84,7 @@ public class CourseModelDB extends DAOCourse {
 
     @Override
     public Course readCourse(int idCourse) {
-        String query = "select * from APICOURSE where id_course = ?";
+        String query = "select * from APICOURSE where idcourse = ?";
         try(PreparedStatement pstm = dbConnect.prepareStatement(query)) {
             pstm.setInt(1, idCourse);
             ResultSet rs = pstm.executeQuery();

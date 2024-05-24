@@ -5,7 +5,6 @@ import MVC.Model.DAOCourse;
 import MVC.View.CourseAbstractView;
 import MVC.View.CourseViewConsole;
 import utilitaires.Utilitaire;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -16,8 +15,9 @@ public class GestCourse {
 
     public void gestion() {
         cm = new CourseModelDB();
-        cv = new CourseViewConsole(null);
-        cc = new CourseController(cm, cv);
+        cc = new CourseController(cm, null);
+        cv = new CourseViewConsole(cc);
+        cc.setView(cv);
         cm.addObserver(cv);
         List<String> loptions = Arrays.asList("courses", "fin");
         do {

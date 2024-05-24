@@ -41,6 +41,7 @@ public class Course extends Subject{
      */
     private Ville ville;
 
+    private int id_ville;
     /**
      * Liste des classements de la course.
      */
@@ -171,6 +172,14 @@ public class Course extends Subject{
      */
     public List<Classement> getList_classement() {
         return list_classement;
+    }
+
+    public int getId_ville() {
+        return id_ville;
+    }
+
+    public void setId_ville(int id_ville) {
+        this.id_ville = id_ville;
     }
 
     /**

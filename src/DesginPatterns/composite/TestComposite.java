@@ -7,7 +7,7 @@ public class TestComposite{
         // Create instances of Championnat with different amounts of prizeMoney
         Championnat championnat1 = new Championnat(1, "Championnat 1", new BigDecimal("1000.00"));
         Championnat championnat2 = new Championnat(2, "Championnat 2", new BigDecimal("2000.00"));
-        Championnat championnat3 = new Championnat(3, "Championnat 3", new BigDecimal("3000.00"));
+        Championnat championnat3 = new Championnat(3, "Championnat 3", new BigDecimal("3010.00"));
 
         // Create an instance of Championnat
         Championnat superChampionnat = new Championnat(4, "Super Championnat", new BigDecimal("5000.00"));
