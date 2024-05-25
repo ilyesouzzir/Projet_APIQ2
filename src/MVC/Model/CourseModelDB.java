@@ -21,14 +21,12 @@ public class CourseModelDB extends DAOCourse {
     }
     @Override
     public Course addCourse(Course course) {
-        String query1 = "insert into APICOURSE(nom,km,dateCourse,priceMoney) values(?,?,?,?,?,?)";
+        String query1 = "insert into APICOURSE(nom, km, dateCourse, priceMoney) values(?,?,?,?)";
         try (PreparedStatement pstm1 = dbConnect.prepareStatement(query1, Statement.RETURN_GENERATED_KEYS)) {
             pstm1.setString(1, course.getNom());
             pstm1.setInt(2, course.getKm());
             pstm1.setDate(3, java.sql.Date.valueOf(course.getDateCourse()));
             pstm1.setBigDecimal(4, course.getPriceMoney());
-
-
             int n = pstm1.executeUpdate();
             if(n==1){
                 ResultSet rs = pstm1.getGeneratedKeys();
@@ -81,7 +79,6 @@ public class CourseModelDB extends DAOCourse {
             return null;
         }
     }
-
     @Override
     public Course readCourse(int idCourse) {
         String query = "select * from APICOURSE where idcourse = ?";
@@ -93,6 +90,7 @@ public class CourseModelDB extends DAOCourse {
                 int km = rs.getInt(3);
                 LocalDate dateCourse = rs.getDate(4).toLocalDate();
                 BigDecimal priceMoney = rs.getBigDecimal(5);
+
                 Course course = new Course(idCourse, nom, km, dateCourse, priceMoney);
                 return course;
             }
@@ -126,7 +124,6 @@ public class CourseModelDB extends DAOCourse {
             return null;
         }
     }
-
     @Override
     public List<Course> getNotification() {
         return getCourses();

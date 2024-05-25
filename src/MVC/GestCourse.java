@@ -15,8 +15,8 @@ public class GestCourse {
 
     public void gestion() {
         cm = new CourseModelDB();
-        cc = new CourseController(cm, null);
-        cv = new CourseViewConsole(cc);
+        cc = new CourseController(cm, cv);
+        cv = new CourseViewConsole();
         cc.setView(cv);
         cm.addObserver(cv);
         List<String> loptions = Arrays.asList("courses", "fin");

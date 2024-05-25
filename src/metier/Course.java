@@ -46,6 +46,8 @@ public class Course {
     private List<Classement> list_classement = new ArrayList<Classement>();
 
 
+
+
     // Constructeurs
 
     /**
@@ -70,6 +72,7 @@ public class Course {
         this.dateCourse = dateCourse;
         this.priceMoney = priceMoney;
     }
+
     
 
     /**
