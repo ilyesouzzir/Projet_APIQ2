@@ -39,6 +39,35 @@ public class PaysViewConsole extends PaysAbstractView {
             }
         } while (true);
     }
+    public void specialPays() {
+        do {
+            int ch = choixListe(Arrays.asList("ajouter un pays", "supprimer un pays", "rechercher un pays", "mettre à jour un pays", "lister les pays", "menu principal"));
+            if(ch==6) return;
+            switch (ch) {
+                case 1:
+                    update(paysController.getAll());
+                    ajouter();
+                    break;
+                case 2:
+                    update(paysController.getAll());
+                    retirer();
+                    break;
+                case 3:
+                    update(paysController.getAll());
+                    rechercher();
+                    break;
+                case 4:
+                    update(paysController.getAll());
+                    modifier();
+                    break;
+                case 5:
+                    affList(paysController.getAll());
+                    break;
+                default:
+                    affMsg("Choix invalide");
+            }
+        } while (true);
+    }
 
     @Override
     public void affList(List l) {
@@ -59,6 +88,8 @@ public class PaysViewConsole extends PaysAbstractView {
     private void rechercher() {
         System.out.println("id_pays : ");
         int idPays = sc.nextInt();
+        sc.nextLine();
+
         Pays p = paysController.search(idPays);
         if(p == null) affMsg("recherche infructueuse");
         else affMsg(p.toString());

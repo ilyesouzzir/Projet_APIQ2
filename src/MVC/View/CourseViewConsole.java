@@ -1,6 +1,7 @@
 package MVC.View;
 
 import metier.Course;
+
 import static utilitaires.Utilitaire.*;
 
 import java.math.BigDecimal;
@@ -43,9 +44,41 @@ public class CourseViewConsole extends CourseAbstractView {
     }
 
     @Override
+    public void specialCourse() {
+        do {
+            int ch = choixListe(Arrays.asList("ajouter une course", "supprimer une course", "rechercher une course", "mettre à jour une course", "lister les courses", "retour au menu principal"));
+            switch (ch) {
+                case 1:
+                    update(courseController.getAll());
+                    ajouter();
+                    break;
+                case 2:
+                    update(courseController.getAll());
+                    retirer();
+                    break;
+                case 3:
+                    update(courseController.getAll());
+                    rechercher();
+                    break;
+                case 4:
+                    update(courseController.getAll());
+                    modifier();
+                    break;
+                case 5:
+                    update(courseController.getAll());
+                    affList(courseController.getAll());
+                    break;
+                case 6:
+                    return;
+            }
+        } while (true);
+    }
+
+    @Override
     public void affList(List l) {
         affListe(l);
     }
+
     private void modifier() {
         int nl = choixElt(lc) - 1;
         Course course = lc.get(nl);
@@ -54,23 +87,23 @@ public class CourseViewConsole extends CourseAbstractView {
         LocalDate dateCourse = LocalDate.parse(modifyIfNotBlank("dateCourse", course.getDateCourse().toString()));
         BigDecimal priceMoney = new BigDecimal(modifyIfNotBlank("priceMoney", course.getPriceMoney().toString()));
         Course c = courseController.updateCourse(new Course(course.getId_course(), nom, km, dateCourse, priceMoney));
-        if(c == null) affMsg("mise à jour infructueuse");
-        else affMsg("mise à jour effectuée : "+c);
+        if (c == null) affMsg("mise à jour infructueuse");
+        else affMsg("mise à jour effectuée : " + c);
     }
 
     private void rechercher() {
         System.out.println("idcourse : ");
         int idCourse = sc.nextInt();
         Course course = courseController.search(idCourse);
-        if(course == null) affMsg("recherche infructueuse");
+        if (course == null) affMsg("recherche infructueuse");
         else affMsg(course.toString());
     }
 
     private void retirer() {
-        int nl = choixElt(lc)-1;
+        int nl = choixElt(lc) - 1;
         Course course = lc.get(nl);
         boolean ok = courseController.removeCourse(course);
-        if(ok) affMsg("course effacée");
+        if (ok) affMsg("course effacée");
         else affMsg("course non effacée");
     }
 
@@ -84,7 +117,7 @@ public class CourseViewConsole extends CourseAbstractView {
         System.out.print("priceMoney: ");
         BigDecimal priceMoney = new BigDecimal(sc.nextLine());
         Course c = courseController.addCourse(new Course(0, nom, km, dateCourse, priceMoney));
-        if(c != null) affMsg("création de :"+c);
+        if (c != null) affMsg("création de :" + c);
         else affMsg("erreur de création");
     }
 

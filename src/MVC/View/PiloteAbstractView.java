@@ -20,7 +20,7 @@ public abstract class PiloteAbstractView implements Observer {
     public abstract Pilote selectionner();
 
     public abstract void menu();
-
+    public abstract void specialPilote();
     public abstract void affList(List l);
 
     @Override

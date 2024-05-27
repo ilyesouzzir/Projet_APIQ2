@@ -54,7 +54,7 @@ public class VilleModelDB extends DAOVille {
     }
     @Override
     public boolean removeVille(Ville ville) {
-        String query = "delete from APIVILLE where id_ville = ?";
+        String query = "delete from APIVILLE where idville = ?";
         try(PreparedStatement pstm = dbConnect.prepareStatement(query)) {
             pstm.setInt(1, ville.getId_ville());
             int n = pstm.executeUpdate();
@@ -67,7 +67,7 @@ public class VilleModelDB extends DAOVille {
     }
     @Override
     public Ville updateVille(Ville ville) {
-        String query = "update APIVILLE set nom =?, latitude=?, longitude=? where id_ville = ?";
+        String query = "update APIVILLE set nom =?, latitude=?, longitude=? where idville = ?";
         try(PreparedStatement pstm = dbConnect.prepareStatement(query)) {
             pstm.setString(1, ville.getNom());
             pstm.setDouble(2, ville.getLatitude());
@@ -85,7 +85,7 @@ public class VilleModelDB extends DAOVille {
 
     @Override
     public Ville readVille(int idVille) {
-        String query = "select * from APIVILLE where id_ville = ?";
+        String query = "select * from APIVILLE where idville = ?";
         try(PreparedStatement pstm = dbConnect.prepareStatement(query)) {
             pstm.setInt(1, idVille);
             ResultSet rs = pstm.executeQuery();

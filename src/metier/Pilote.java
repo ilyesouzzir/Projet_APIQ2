@@ -53,6 +53,13 @@ public class Pilote {
 
     }
 
+    public Pilote(String matricule, String nom, String prenom, LocalDate datenaiss) {
+        this.matricule = matricule;
+        this.nom = nom;
+        this.prenom = prenom;
+        this.datenaiss = datenaiss;
+    }
+
     /**
      * Méthode getter pour récupérer l'identifiant du pilote.
      */

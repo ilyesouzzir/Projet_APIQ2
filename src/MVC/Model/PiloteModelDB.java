@@ -57,7 +57,7 @@ public class PiloteModelDB extends DAOPilote {
     }
     @Override
     public boolean removePilote(Pilote pilote) {
-        String query = "delete from APIPILOTE where id_pilote = ?";
+        String query = "delete from APIPILOTE where idpilote = ?";
         try(PreparedStatement pstm = dbConnect.prepareStatement(query)) {
             pstm.setInt(1, pilote.getId_pilote());
             int n = pstm.executeUpdate();
@@ -70,7 +70,7 @@ public class PiloteModelDB extends DAOPilote {
     }
     @Override
     public Pilote updatePilote(Pilote pilote) {
-        String query = "update APIPILOTE set matricule =?, nom=?, prenom=?, datenaiss=? where id_pilote = ?";
+        String query = "update APIPILOTE set matricule =?, nom=?, prenom=?, datenaiss=? where idpilote = ?";
         try(PreparedStatement pstm = dbConnect.prepareStatement(query)) {
             pstm.setString(1, pilote.getMatricule());
             pstm.setString(2, pilote.getNom());
@@ -90,7 +90,7 @@ public class PiloteModelDB extends DAOPilote {
 
     @Override
     public Pilote readPilote(int idPilote) {
-        String query = "select * from APIPILOTE where id_pilote = ?";
+        String query = "select * from APIPILOTE where idpilote = ?";
         try(PreparedStatement pstm = dbConnect.prepareStatement(query)) {
             pstm.setInt(1, idPilote);
             ResultSet rs = pstm.executeQuery();
@@ -119,7 +119,7 @@ public class PiloteModelDB extends DAOPilote {
         try (Statement stm = dbConnect.createStatement()) {
             ResultSet rs = stm.executeQuery(query);
             while (rs.next()) {
-                int idPilote = rs.getInt("id_pilote");
+                int idPilote = rs.getInt("idpilote");
                 String matricule = rs.getString("matricule");
                 String nom = rs.getString("nom");
                 String prenom = rs.getString("prenom");
