@@ -2,6 +2,7 @@ package MVC.Controller;
 
 import MVC.Model.DAOPays;
 import MVC.View.PaysAbstractView;
+import MVC.View.VilleAbstractView;
 import metier.Pays;
 
 import java.util.List;
@@ -34,5 +35,11 @@ public class PaysController {
 
     public Pays search(int idPays) {
         return model.readPays(idPays);
+    }
+    public void setView(PaysAbstractView view) {
+        this.view = view;
+        if (this.view != null) {
+            this.view.setController(this);
+        }
     }
 }

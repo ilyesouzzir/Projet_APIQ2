@@ -20,8 +20,8 @@ public class VilleModelDB extends DAOVille {
     }
     @Override
     public Ville addVille(Ville ville) {
-        String query1 = "insert into APIVILLE(nom,latitude,longitude) values(?,?,?)";
-        String query2 = "select idVille from APIVILLE where latitude = ? and longitude=?";
+        String query1 = "insert into TESTVILLE(nom,latitude,longitude) values(?,?,?)";
+        String query2 = "select idVille from TESTVILLE where latitude = ? and longitude=?";
         try (PreparedStatement pstm1 = dbConnect.prepareStatement(query1, Statement.RETURN_GENERATED_KEYS);
              PreparedStatement pstm2 = dbConnect.prepareStatement(query2)) {
             pstm1.setString(1, ville.getNom());
@@ -54,7 +54,7 @@ public class VilleModelDB extends DAOVille {
     }
     @Override
     public boolean removeVille(Ville ville) {
-        String query = "delete from APIVILLE where idville = ?";
+        String query = "delete from TESTVILLE where idville = ?";
         try(PreparedStatement pstm = dbConnect.prepareStatement(query)) {
             pstm.setInt(1, ville.getId_ville());
             int n = pstm.executeUpdate();
@@ -67,7 +67,7 @@ public class VilleModelDB extends DAOVille {
     }
     @Override
     public Ville updateVille(Ville ville) {
-        String query = "update APIVILLE set nom =?, latitude=?, longitude=? where idville = ?";
+        String query = "update TESTVILLE set nom =?, latitude=?, longitude=? where idville = ?";
         try(PreparedStatement pstm = dbConnect.prepareStatement(query)) {
             pstm.setString(1, ville.getNom());
             pstm.setDouble(2, ville.getLatitude());
@@ -85,7 +85,7 @@ public class VilleModelDB extends DAOVille {
 
     @Override
     public Ville readVille(int idVille) {
-        String query = "select * from APIVILLE where idville = ?";
+        String query = "select * from TESTVILLE where idville = ?";
         try(PreparedStatement pstm = dbConnect.prepareStatement(query)) {
             pstm.setInt(1, idVille);
             ResultSet rs = pstm.executeQuery();
@@ -109,7 +109,7 @@ public class VilleModelDB extends DAOVille {
     @Override
     public List<Ville> getVilles() {
         List<Ville> lv = new ArrayList<>();
-        String query = "select * from APIVILLE";
+        String query = "select * from TESTVILLE";
         try (Statement stm = dbConnect.createStatement()) {
             ResultSet rs = stm.executeQuery(query);
             while (rs.next()) {

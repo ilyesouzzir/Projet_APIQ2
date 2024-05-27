@@ -2,6 +2,7 @@ package  MVC.Controller;
 
 import MVC.Model.DAOPilote;
 import MVC.View.PiloteAbstractView;
+import MVC.View.VilleAbstractView;
 import metier.Pilote;
 
 import java.util.List;
@@ -35,5 +36,10 @@ public class PiloteController {
     public Pilote search(int idPilote) {
         return model.readPilote(idPilote);
     }
-
+    public void setView(PiloteAbstractView view) {
+        this.view = view;
+        if (this.view != null) {
+            this.view.setController(this);
+        }
+    }
 }

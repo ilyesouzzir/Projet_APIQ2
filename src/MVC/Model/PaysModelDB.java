@@ -19,7 +19,7 @@ public class PaysModelDB extends DAOPays {
     }
     @Override
     public Pays addPays(Pays pays) {
-        String query1 = "insert into APIPAYS(sigle,nom,langue) values(?,?,?)";
+        String query1 = "insert into TESTPAYS(sigle,nom,langue) values(?,?,?)";
         String query2 = "select idPays from TESTPAYS where sigle = ? and nom = ? and langue = ?";
         try (PreparedStatement pstm1 = dbConnect.prepareStatement(query1, Statement.RETURN_GENERATED_KEYS);
              PreparedStatement pstm2 = dbConnect.prepareStatement(query2)) {
@@ -53,7 +53,7 @@ public class PaysModelDB extends DAOPays {
     }
     @Override
     public boolean removePays(Pays pays) {
-        String query = "delete from APIPAYS where idpays = ?";
+        String query = "delete from TESTPAYS where idpays = ?";
         try(PreparedStatement pstm = dbConnect.prepareStatement(query)) {
             pstm.setInt(1, pays.getId_pays());
             int n = pstm.executeUpdate();
@@ -66,7 +66,7 @@ public class PaysModelDB extends DAOPays {
     }
     @Override
     public Pays updatePays(Pays pays) {
-        String query = "update APIPAYS set sigle =?, nom=?, langue=? where idpays = ?";
+        String query = "update TESTPAYS set sigle =?, nom=?, langue=? where idpays = ?";
         try(PreparedStatement pstm = dbConnect.prepareStatement(query)) {
             pstm.setString(1, pays.getSigle());
             pstm.setString(2, pays.getNom());
@@ -84,7 +84,7 @@ public class PaysModelDB extends DAOPays {
 
     @Override
     public Pays readPays(int idPays) {
-        String query = "select * from APIPAYS where idpays = ?";
+        String query = "select * from TESTPAYS where idpays = ?";
         try(PreparedStatement pstm = dbConnect.prepareStatement(query)) {
             pstm.setInt(1, idPays);
             ResultSet rs = pstm.executeQuery();
@@ -108,7 +108,7 @@ public class PaysModelDB extends DAOPays {
     @Override
     public List<Pays> getPays() {
         List<Pays> lp = new ArrayList<>();
-        String query = "select * from APIPAYS";
+        String query = "select * from TESTPAYS";
         try (Statement stm = dbConnect.createStatement()) {
             ResultSet rs = stm.executeQuery(query);
             while (rs.next()) {

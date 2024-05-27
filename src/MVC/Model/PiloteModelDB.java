@@ -20,8 +20,8 @@ public class PiloteModelDB extends DAOPilote {
     }
     @Override
     public Pilote addPilote(Pilote pilote) {
-        String query1 = "insert into APIPILOTE(matricule, nom, prenom, datenaiss) values(?,?,?,?)";
-        String query2 = "select idPilote from APIPILOTE where matricule = ?";
+        String query1 = "insert into TESTPILOTE(matricule, nom, prenom, datenaiss) values(?,?,?,?)";
+        String query2 = "select idPilote from TESTPILOTE where matricule = ?";
         try (PreparedStatement pstm1 = dbConnect.prepareStatement(query1, Statement.RETURN_GENERATED_KEYS);
              PreparedStatement pstm2 = dbConnect.prepareStatement(query2)) {
             pstm1.setString(1, pilote.getMatricule());
@@ -57,7 +57,7 @@ public class PiloteModelDB extends DAOPilote {
     }
     @Override
     public boolean removePilote(Pilote pilote) {
-        String query = "delete from APIPILOTE where idpilote = ?";
+        String query = "delete from TESTPILOTE where idpilote = ?";
         try(PreparedStatement pstm = dbConnect.prepareStatement(query)) {
             pstm.setInt(1, pilote.getId_pilote());
             int n = pstm.executeUpdate();
@@ -70,7 +70,7 @@ public class PiloteModelDB extends DAOPilote {
     }
     @Override
     public Pilote updatePilote(Pilote pilote) {
-        String query = "update APIPILOTE set matricule =?, nom=?, prenom=?, datenaiss=? where idpilote = ?";
+        String query = "update TESTPILOTE set matricule =?, nom=?, prenom=?, datenaiss=? where idpilote = ?";
         try(PreparedStatement pstm = dbConnect.prepareStatement(query)) {
             pstm.setString(1, pilote.getMatricule());
             pstm.setString(2, pilote.getNom());
@@ -90,7 +90,7 @@ public class PiloteModelDB extends DAOPilote {
 
     @Override
     public Pilote readPilote(int idPilote) {
-        String query = "select * from APIPILOTE where idpilote = ?";
+        String query = "select * from TESTPILOTE where idpilote = ?";
         try(PreparedStatement pstm = dbConnect.prepareStatement(query)) {
             pstm.setInt(1, idPilote);
             ResultSet rs = pstm.executeQuery();
@@ -115,7 +115,7 @@ public class PiloteModelDB extends DAOPilote {
     @Override
     public List<Pilote> getPilotes() {
         List<Pilote> lp = new ArrayList<>();
-        String query = "select * from APIPILOTE";
+        String query = "select * from TESTPILOTE";
         try (Statement stm = dbConnect.createStatement()) {
             ResultSet rs = stm.executeQuery(query);
             while (rs.next()) {

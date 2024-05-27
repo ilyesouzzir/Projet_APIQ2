@@ -3,6 +3,7 @@ package  MVC.Controller;
 
 import MVC.Model.DAOVille;
 
+import MVC.View.CourseAbstractView;
 import MVC.View.VilleAbstractView;
 import metier.Ville;
 
@@ -38,5 +39,10 @@ public class VilleController {
     public Ville search(int idVille) {
         return model.readVille(idVille);
     }
-
+    public void setView(VilleAbstractView view) {
+        this.view = view;
+        if (this.view != null) {
+            this.view.setController(this);
+        }
+    }
 }
