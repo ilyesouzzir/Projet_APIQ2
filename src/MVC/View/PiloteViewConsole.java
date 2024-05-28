@@ -81,6 +81,7 @@ public class PiloteViewConsole extends PiloteAbstractView {
     }
 
     private void modifier() {
+        System.out.println("Veuillez entrer l'ID du pilote à modifier : ");
         int nl = choixElt(lp) - 1;
         Pilote pilote = lp.get(nl);
         String matricule = modifyIfNotBlank("matricule", pilote.getMatricule());
@@ -93,7 +94,7 @@ public class PiloteViewConsole extends PiloteAbstractView {
     }
 
     private void rechercher() {
-        System.out.println("id_pilote : ");
+        System.out.println("Veuillez entrer l'ID du pilote à rechercher : ");
         int idPilote = sc.nextInt();
         Pilote p = piloteController.search(idPilote);
         if(p == null) affMsg("recherche infructueuse");
@@ -101,6 +102,7 @@ public class PiloteViewConsole extends PiloteAbstractView {
     }
 
     private void retirer() {
+        System.out.println("Veuillez entrer l'ID du pilote à supprimer : ");
         int nl = choixElt(lp) - 1;
         Pilote pilote = lp.get(nl);
         boolean ok = piloteController.removePilote(pilote);

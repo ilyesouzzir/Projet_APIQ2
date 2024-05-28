@@ -70,8 +70,8 @@ public class GestionCourse {
         System.out.println("priceMoney  : ");
         BigDecimal priceMoney = sc.nextBigDecimal();
 
-        String query1 = "insert into  TESTCourse( NOM, KM, DATECOURSE, PRICEMONEY) values(?,?,?,?)";
-        String query2 = "select IDCOURSE from TESTCOURSE where NOM= ?";
+        String query1 = "insert into  APICourse( NOM, KM, DATECOURSE, PRICEMONEY) values(?,?,?,?)";
+        String query2 = "select IDCOURSE from APICourse where NOM= ?";
         try(PreparedStatement pstm1= dbConnect.prepareStatement(query1);
             PreparedStatement pstm2= dbConnect.prepareStatement(query2);
         ) {
@@ -114,7 +114,7 @@ public class GestionCourse {
         BigDecimal priceMoney = sc.nextBigDecimal();
         sc.skip("\n");
 
-        String query = "update  TESTCourse set NOM=?, KM=?, DATECOURSE=?, PRICEMONEY=? where IDCOURSE = ?";
+        String query = "update  APICourse set NOM=?, KM=?, DATECOURSE=?, PRICEMONEY=? where IDCOURSE = ?";
         try(PreparedStatement pstm = dbConnect.prepareStatement(query)) {
             pstm.setString(1, ncourse);
             pstm.setInt(2, km);
@@ -134,7 +134,7 @@ public class GestionCourse {
     public void recherche() {
         System.out.println("Entrez l'ID de la course recherchée : ");
         int id_course = sc.nextInt();
-        String query = "SELECT * FROM  TESTCourse WHERE IDCOURSE = ?";
+        String query = "SELECT * FROM  APICourse WHERE IDCOURSE = ?";
         try(PreparedStatement pstm = dbConnect.prepareStatement(query)) {
             pstm.setInt(1, id_course);
             ResultSet rs = pstm.executeQuery();
@@ -163,7 +163,7 @@ public class GestionCourse {
     public void suppression() {
         System.out.println("id de la course à supprimer  ");
         int idrech_course = sc.nextInt();
-        String query = "delete from  TESTCourse where IDCOURSE = ?";
+        String query = "delete from  APICourse where IDCOURSE = ?";
         try(PreparedStatement pstm = dbConnect.prepareStatement(query)) {
             pstm.setInt(1,idrech_course);
             int n = pstm.executeUpdate();
@@ -180,7 +180,7 @@ public class GestionCourse {
         }
     }
     private void tous() {
-        String query = "SELECT * FROM  TESTCourse";
+        String query = "SELECT * FROM  APICourse";
         try (Statement stm = dbConnect.createStatement()) {
             ResultSet rs = stm.executeQuery(query);
             while (rs.next()) {

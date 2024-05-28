@@ -75,17 +75,19 @@ public class VilleViewConsole extends VilleAbstractView {
     }
 
     private void modifier() {
+        System.out.println("Veuillez entrer l'ID de la ville à modifier : ");
         int nl = choixElt(lv) - 1;
         Ville ville = lv.get(nl);
         String nom = modifyIfNotBlank("nom", ville.getNom());
         double latitude = Double.parseDouble(modifyIfNotBlank("latitude", "" + ville.getLatitude()));
         double longitude = Double.parseDouble(modifyIfNotBlank("longitude", "" + ville.getLongitude()));
-        Ville v = villeController.updateVille(new Ville(nom, latitude, longitude));
+        Ville v = villeController.updateVille(new Ville(ville.getId_ville(),nom, latitude, longitude));
         if(v == null) affMsg("mise à jour infructueuse");
         else affMsg("mise à jour effectuée : "+v);
     }
 
     private void rechercher() {
+        System.out.println("Veuillez entrer l'ID de la ville à rechercher : ");
         System.out.println("id_ville : ");
         int idVille = sc.nextInt();
         Ville v = villeController.search(idVille);
@@ -94,6 +96,7 @@ public class VilleViewConsole extends VilleAbstractView {
     }
 
     private void retirer() {
+        System.out.println("Veuillez entrer l'ID de la ville à supprimer : ");
         int nl = choixElt(lv) - 1;
         Ville ville = lv.get(nl);
         boolean ok = villeController.removeVille(ville);

@@ -45,6 +45,13 @@ public class Pays {
      * @param nom    Nom du pays.
      * @param langue Langue principale du pays.
      */
+    public Pays(int id_pays, String sigle, String nom, String langue) {
+        this.id_pays = id_pays;
+        this.sigle = sigle;
+        this.nom = nom;
+        this.langue = langue;
+    }
+
     public Pays(String sigle, String nom, String langue) {
         this.sigle = sigle;
         this.nom = nom;

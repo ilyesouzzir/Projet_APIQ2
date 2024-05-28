@@ -53,6 +53,13 @@ public class Ville {
         this.longitude = longitude;
     }
 
+    public Ville(int id_ville, String nom, double latitude, double longitude) {
+        this.id_ville = id_ville;
+        this.nom = nom;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
     /**
      * Retourne le nom de la ville.
      *
@@ -150,7 +157,7 @@ public class Ville {
      */
     @Override
     public String toString() {
-        return "Ville{" +
+        return "Ville{" + id_ville +
                 "nom='" + nom + '\'' +
                 ", latitude=" + latitude +
                 ", longitude=" + longitude +

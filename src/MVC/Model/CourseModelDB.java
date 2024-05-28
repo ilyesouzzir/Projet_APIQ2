@@ -21,7 +21,7 @@ public class CourseModelDB extends DAOCourse {
     }
     @Override
     public Course addCourse(Course course) {
-        String query1 = "insert into  TESTCourse(nom, km, dateCourse, priceMoney) values(?,?,?,?)";
+        String query1 = "insert into  APICourse(nom, km, dateCourse, priceMoney) values(?,?,?,?)";
         try (PreparedStatement pstm1 = dbConnect.prepareStatement(query1, Statement.RETURN_GENERATED_KEYS)) {
             pstm1.setString(1, course.getNom());
             pstm1.setInt(2, course.getKm());
@@ -50,7 +50,7 @@ public class CourseModelDB extends DAOCourse {
     }
     @Override
     public boolean removeCourse(Course course) {
-        String query = "delete from  TESTCourse where idcourse = ?";
+        String query = "delete from  APICourse where idcourse = ?";
         try(PreparedStatement pstm = dbConnect.prepareStatement(query)) {
             pstm.setInt(1, course.getId_course());
             int n = pstm.executeUpdate();
@@ -63,7 +63,7 @@ public class CourseModelDB extends DAOCourse {
     }
     @Override
     public Course updateCourse(Course course) {
-        String query = "update  TESTCourse set nom =?, km=?, dateCourse=?, priceMoney=? where idcourse = ?";
+        String query = "update  APICourse set nom =?, km=?, dateCourse=?, priceMoney=? where idcourse = ?";
         try(PreparedStatement pstm = dbConnect.prepareStatement(query)) {
             pstm.setString(1, course.getNom());
             pstm.setInt(2, course.getKm());
@@ -81,7 +81,7 @@ public class CourseModelDB extends DAOCourse {
     }
     @Override
     public Course readCourse(int idCourse) {
-        String query = "select * from  TESTCourse where idcourse = ?";
+        String query = "select * from  APICourse where idcourse = ?";
         try(PreparedStatement pstm = dbConnect.prepareStatement(query)) {
             pstm.setInt(1, idCourse);
             ResultSet rs = pstm.executeQuery();
@@ -106,7 +106,7 @@ public class CourseModelDB extends DAOCourse {
     @Override
     public List<Course> getCourses() {
         List<Course> lc = new ArrayList<>();
-        String query = "select * from  TESTCourse";
+        String query = "select * from  APICourse";
         try (Statement stm = dbConnect.createStatement()) {
             ResultSet rs = stm.executeQuery(query);
             while (rs.next()) {

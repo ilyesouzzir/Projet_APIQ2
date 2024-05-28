@@ -80,6 +80,7 @@ public class CourseViewConsole extends CourseAbstractView {
     }
 
     private void modifier() {
+        System.out.println("Veuillez entrer l'ID du cours à modifier : ");
         int nl = choixElt(lc) - 1;
         Course course = lc.get(nl);
         String nom = modifyIfNotBlank("nom", course.getNom());
@@ -92,6 +93,7 @@ public class CourseViewConsole extends CourseAbstractView {
     }
 
     private void rechercher() {
+        System.out.println("Veuillez entrer l'ID du cours à rechercher : ");
         System.out.println("idcourse : ");
         int idCourse = sc.nextInt();
         Course course = courseController.search(idCourse);
@@ -100,6 +102,7 @@ public class CourseViewConsole extends CourseAbstractView {
     }
 
     private void retirer() {
+        System.out.println("Veuillez entrer l'ID du cours à supprimer : ");
         int nl = choixElt(lc) - 1;
         Course course = lc.get(nl);
         boolean ok = courseController.removeCourse(course);

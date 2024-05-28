@@ -75,17 +75,19 @@ public class PaysViewConsole extends PaysAbstractView {
     }
 
     private void modifier() {
+        System.out.println("Veuillez entrer l'ID du pays à modifier : ");
         int nl = choixElt(lp) - 1;
         Pays pays = lp.get(nl);
         String sigle = modifyIfNotBlank("sigle", pays.getSigle());
         String nom = modifyIfNotBlank("nom", pays.getNom());
         String langue = modifyIfNotBlank("langue", pays.getLangue());
-        Pays p = paysController.updatePays(new Pays(sigle, nom, langue));
+        Pays p = paysController.updatePays(new Pays(pays.getId_pays(),sigle, nom, langue));
         if(p == null) affMsg("mise à jour infructueuse");
         else affMsg("mise à jour effectuée : "+p);
     }
 
     private void rechercher() {
+        System.out.println("Veuillez entrer l'ID du pays à rechercher : ");
         System.out.println("id_pays : ");
         int idPays = sc.nextInt();
         sc.nextLine();
@@ -96,6 +98,7 @@ public class PaysViewConsole extends PaysAbstractView {
     }
 
     private void retirer() {
+        System.out.println("Veuillez entrer l'ID du pays à supprimer : ");
         int nl = choixElt(lp) - 1;
         Pays pays = lp.get(nl);
         boolean ok = paysController.removePays(pays);
