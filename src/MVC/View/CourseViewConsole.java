@@ -1,5 +1,6 @@
 package MVC.View;
 
+import MVC.Controller.CourseController;
 import metier.Course;
 
 import static utilitaires.Utilitaire.*;
@@ -23,56 +24,51 @@ public class CourseViewConsole extends CourseAbstractView {
     public void menu() {
         update(courseController.getAll());
         do {
-            int ch = choixListe(Arrays.asList("ajout", "retrait", "rechercher", "modifier", "fin"));
-            switch (ch) {
-                case 1:
-                    ajouter();
-                    break;
-                case 2:
-                    retirer();
-                    break;
-                case 3:
-                    rechercher();
-                    break;
-                case 4:
-                    modifier();
-                    break;
-                case 5:
-                    return;
-            }
-        } while (true);
-    }
-
-    @Override
-    public void specialCourse() {
-        do {
             int ch = choixListe(Arrays.asList("ajouter une course", "supprimer une course", "rechercher une course", "mettre à jour une course", "lister les courses", "retour au menu principal"));
             switch (ch) {
                 case 1:
-                    update(courseController.getAll());
                     ajouter();
                     break;
                 case 2:
-                    update(courseController.getAll());
                     retirer();
                     break;
                 case 3:
-                    update(courseController.getAll());
                     rechercher();
                     break;
                 case 4:
-                    update(courseController.getAll());
                     modifier();
                     break;
                 case 5:
-                    update(courseController.getAll());
-                    affList(courseController.getAll());
-                    break;
-                case 6:
                     return;
             }
         } while (true);
     }
+    private void special(Course c) {
+    do {
+        int ch = choixListe(Arrays.asList("commandes en cours", "factures non payees", "factures en retard", "factures payees", "produits achetés", "liste pilote place gain", "menu principal"));
+        if(ch==7) return;
+        List l = switch (ch) {
+            case 1 -> courseController.listePaysPilotes();
+            case 2 -> courseController.gainTotal();
+            case 3 -> courseController.listePilotePlaceGain();
+            case 4 -> courseController.vainqueur();
+            case 5 -> courseController.resultat();
+            case 6 -> courseController.addCourse(c);
+            case 7 -> courseController.addPilote(c);
+            case 8 -> courseController.supPilote();
+            case 9 -> courseController.modif();
+            case 10 -> courseController.classementComplet();
+            case 11 -> courseController.ListePiloteDuPays();
+
+
+            default -> null;
+        };
+        if(l==null || l.isEmpty()) affMsg("aucun élément trouvée");
+        else affList(l);
+    } while (true);
+}
+
+
 
     @Override
     public void affList(List l) {

@@ -20,7 +20,7 @@ public class VilleViewConsole extends VilleAbstractView {
     public void menu() {
         update(villeController.getAll());
         do {
-            int ch = choixListe(Arrays.asList("ajout", "retrait", "rechercher", "modifier", "fin"));
+            int ch = choixListe(Arrays.asList("ajouter une ville", "supprimer une ville", "rechercher une ville", "mettre à jour une ville", "lister les villes", "menu principal"));
             switch (ch) {
                 case 1:
                     ajouter();
@@ -39,35 +39,7 @@ public class VilleViewConsole extends VilleAbstractView {
             }
         } while (true);
     }
-    public void specialVille() {
-        do {
-            int ch = choixListe(Arrays.asList("ajouter une ville", "supprimer une ville", "rechercher une ville", "mettre à jour une ville", "lister les villes", "menu principal"));
-            if(ch==6) return;
-            switch (ch) {
-                case 1:
-                    update(villeController.getAll());
-                    ajouter();
-                    break;
-                case 2:
-                    update(villeController.getAll());
-                    retirer();
-                    break;
-                case 3:
-                    update(villeController.getAll());
-                    rechercher();
-                    break;
-                case 4:
-                    update(villeController.getAll());
-                    modifier();
-                    break;
-                case 5:
-                    affList(villeController.getAll());
-                    break;
-                default:
-                    affMsg("Choix invalide");
-            }
-        } while (true);
-    }
+
 
     @Override
     public void affList(List l) {

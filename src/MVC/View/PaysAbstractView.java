@@ -18,7 +18,6 @@ public abstract class PaysAbstractView implements Observer {
     public abstract void affMsg(String msg);
 
     public abstract Pays selectionner();
-    public abstract void specialPays();
     public abstract void menu();
 
     public abstract void affList(List l);

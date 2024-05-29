@@ -21,7 +21,7 @@ public abstract class VilleAbstractView implements Observer {
     public abstract Ville selectionner();
 
     public abstract void menu();
-    public abstract void specialVille();
+
     public abstract void affList(List l);
 
     @Override

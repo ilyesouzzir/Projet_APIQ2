@@ -2,8 +2,12 @@ package  MVC.Controller;
 
 import MVC.Model.DAOCourse;
 import MVC.View.CourseAbstractView;
+import metier.Classement;
 import metier.Course;
+import metier.Pays;
+import metier.Pilote;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class CourseController {

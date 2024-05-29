@@ -20,7 +20,7 @@ public abstract class CourseAbstractView implements Observer {
     public abstract Course selectionner();
 
     public abstract void menu();
-    public abstract void specialCourse();
+
 
     public abstract void affList(List l);
 

@@ -21,7 +21,7 @@ public class PiloteViewConsole extends PiloteAbstractView {
     public void menu() {
         update(piloteController.getAll());
         do {
-            int ch = choixListe(Arrays.asList("ajout", "retrait", "rechercher", "modifier", "fin"));
+            int ch = choixListe(Arrays.asList("ajouter un pilote", "supprimer un pilote", "rechercher un pilote", "mettre à jour un pilote", "lister les pilotes", "menu principal"));
             switch (ch) {
                 case 1:
                     update(piloteController.getAll());
@@ -44,36 +44,7 @@ public class PiloteViewConsole extends PiloteAbstractView {
             }
         } while (true);
     }
-    public void specialPilote() {
-        update(piloteController.getAll());
-        do {
-            int ch = choixListe(Arrays.asList("ajouter un pilote", "supprimer un pilote", "rechercher un pilote", "mettre à jour un pilote", "lister les pilotes", "menu principal"));
-            if(ch==6) return;
-            switch (ch) {
-                case 1:
-                    update(piloteController.getAll());
-                    ajouter();
-                    break;
-                case 2:
-                    update(piloteController.getAll());
-                    retirer();
-                    break;
-                case 3:
-                    update(piloteController.getAll());
-                    rechercher();
-                    break;
-                case 4:
-                    update(piloteController.getAll());
-                    modifier();
-                    break;
-                case 5:affList(piloteController.getAll());
-                  break;
 
-                default:
-                    affMsg("Choix invalide");
-            }
-        } while (true);
-    }
 
     @Override
     public void affList(List l) {
