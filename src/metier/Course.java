@@ -43,7 +43,7 @@ public class Course {
     /**
      * Liste des classements de la course.
      */
-    private List<Classement> list_classement = new ArrayList<Classement>();
+    protected List<Classement> list_classement = new ArrayList<Classement>();
 
 
 

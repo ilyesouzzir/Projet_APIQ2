@@ -1,4 +1,4 @@
-package  MVC.Controller;
+package MVC.Controller;
 
 import MVC.Model.DAOCourse;
 import MVC.View.CourseAbstractView;
@@ -13,6 +13,7 @@ import java.util.List;
 public class CourseController {
     private DAOCourse model;
     private CourseAbstractView view;
+
     public CourseController(DAOCourse model, CourseAbstractView view) {
         this.model = model;
         this.view = view;
@@ -21,12 +22,12 @@ public class CourseController {
         }
     }
 
-    public List<Course> getAll(){
+    public List<Course> getAll() {
         return model.getCourses();
     }
 
     public Course addCourse(Course course) {
-        return  model.addCourse(course);
+        return model.addCourse(course);
     }
 
     public boolean removeCourse(Course course) {
@@ -48,4 +49,46 @@ public class CourseController {
         }
     }
 
+    public List<Classement> ListePilotePlacecGain(Classement cl) {
+        return model.listePilotePlaceGain(cl);
+    }
+
+
+    public BigDecimal gainTotal() {
+        return model.gainTotal();
+    }
+
+    public List<Pays> listePaysPilotes() {
+        return model.listePaysPilotes();
+    }
+
+    public Pilote vainqueur() {
+        return model.vainqueur();
+    }
+
+    public void addPilote(Pilote pilote) {
+        model.addPilote(pilote);
+    }
+
+
+    public void supPilote(Pilote pilote) {
+        model.supPilote(pilote);
+    }
+
+    public Classement resultat(Pilote pilote, int place, BigDecimal gain) {
+        return model.resultat(pilote, place, gain);
+    }
+
+    public void modif(Pilote pilote, int place, BigDecimal gain) {
+        model.modif(pilote, place, gain);
+    }
+
+    public List<Pilote> ListePiloteDuPays() {
+        return model.ListePiloteDuPays();
+    }
+
+
+    public boolean classementComplet() {
+        return model.classementComplet();
+    }
 }

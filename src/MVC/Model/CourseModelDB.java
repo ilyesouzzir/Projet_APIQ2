@@ -1,6 +1,9 @@
 package MVC.Model;
 
+import metier.Classement;
 import metier.Course;
+import metier.Pays;
+import metier.Pilote;
 import myconnections.DBConnection;
 
 import java.math.BigDecimal;
@@ -123,6 +126,201 @@ public class CourseModelDB extends DAOCourse {
             System.err.println("erreur sql :" + e);
             return null;
         }
+    }
+    @Override
+    public List<Classement> listePilotePlaceGain(Classement cl) {
+        List<Classement> list = new ArrayList<>();
+        String query = "SELECT * FROM Classement ORDER BY place ASC";
+
+        try (PreparedStatement pstm = dbConnect.prepareStatement(query)) {
+            pstm.setInt(1, cl.getPlace());
+            pstm.setBigDecimal(2, cl.getGain());
+
+            ResultSet rs = pstm.executeQuery();
+            while (rs.next()) {
+                // Assuming you have a constructor or setters to create a Classement object
+                Classement classement = new Classement();
+                // Set the properties of the 'classement' object based on the ResultSet
+                // Add the 'classement' object to the list
+                list.add(classement);
+            }
+        } catch (SQLException e) {
+            System.err.println("erreur sql :" + e);
+        }
+
+        return list;
+
+    }
+
+    @Override
+    public BigDecimal gainTotal() {
+        BigDecimal totalGain = BigDecimal.ZERO;
+        String query = "SELECT SUM(gain) FROM Classement";
+
+        try (Statement stm = dbConnect.createStatement()) {
+            ResultSet rs = stm.executeQuery(query);
+            if (rs.next()) {
+                totalGain = rs.getBigDecimal(1);
+            }
+        } catch (SQLException e) {
+            System.err.println("erreur sql :" + e);
+        }
+
+        return totalGain;
+    }
+
+    @Override
+    public List<Pays> listePaysPilotes() {
+        List<Pays> list = new ArrayList<>();
+        String query = "SELECT DISTINCT Pays FROM Pilote";
+
+        try (Statement stm = dbConnect.createStatement()) {
+            ResultSet rs = stm.executeQuery(query);
+            while (rs.next()) {
+                // Assuming you have a constructor or setters to create a Pays object
+                Pays pays = new Pays();
+                // Set the properties of the 'pays' object based on the ResultSet
+                // Add the 'pays' object to the list
+                list.add(pays);
+            }
+        } catch (SQLException e) {
+            System.err.println("erreur sql :" + e);
+        }
+
+        return list;
+    }
+    @Override
+    public Pilote vainqueur() {
+        Pilote pilote = null;
+        String query = "SELECT * FROM Pilote WHERE id_pilote = (SELECT pilote_id FROM Classement WHERE place = 1 )";
+
+        try (Statement stm = dbConnect.createStatement()) {
+            ResultSet rs = stm.executeQuery(query);
+            if (rs.next()) {
+                // Assuming you have a constructor or setters to create a Pilote object
+                pilote = new Pilote();
+                // Set the properties of the 'pilote' object based on the ResultSet
+            }
+        } catch (SQLException e) {
+            System.err.println("erreur sql :" + e);
+        }
+
+        return pilote;
+    }
+
+    @Override
+    public void addPilote(Pilote pilote) {
+        String query = "INSERT INTO Pilote (id_pilote, nom, prenom, pays) VALUES (?, ?, ?, ?)";
+
+        try (PreparedStatement pstm = dbConnect.prepareStatement(query)) {
+            pstm.setInt(1, pilote.getId_pilote());
+            pstm.setString(2, pilote.getNom());
+            pstm.setString(3, pilote.getPrenom());
+            pstm.setString(4, pilote.getPays().getNom());
+
+            pstm.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("erreur sql :" + e);
+        }
+    }
+    @Override
+    public void supPilote(Pilote pilote) {
+        String query = "DELETE FROM Pilote WHERE id_pilote = ?";
+
+        try (PreparedStatement pstm = dbConnect.prepareStatement(query)) {
+            pstm.setInt(1, pilote.getId_pilote());
+
+            pstm.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("erreur sql :" + e);
+        }
+    }
+    @Override
+    public Classement resultat(Pilote pilote, int place, BigDecimal gain) {
+        Classement classement = null;
+        String query = "INSERT INTO Classement (pilote_id, place, gain) VALUES (?, ?, ?)";
+
+        try (PreparedStatement pstm = dbConnect.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+            pstm.setInt(1, pilote.getId_pilote());
+            pstm.setInt(2, place);
+            pstm.setBigDecimal(3, gain);
+
+            int affectedRows = pstm.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("Creating user failed, no rows affected.");
+            }
+
+            try (ResultSet generatedKeys = pstm.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    classement = new Classement();
+                    classement.setId_classement(generatedKeys.getInt(1));
+                    classement.setPilote(pilote);
+                    classement.setPlace(place);
+                    classement.setGain(gain);
+                } else {
+                    throw new SQLException("Creating user failed, no ID obtained.");
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("erreur sql :" + e);
+        }
+
+        return classement;
+    }
+    @Override
+    public void modif(Pilote pilote, int place, BigDecimal gain) {
+        String query = "UPDATE Classement SET place = ?, gain = ? WHERE pilote_id = ?";
+
+        try (PreparedStatement pstm = dbConnect.prepareStatement(query)) {
+            pstm.setInt(1, place);
+            pstm.setBigDecimal(2, gain);
+            pstm.setInt(3, pilote.getId_pilote());
+
+            pstm.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("erreur sql :" + e);
+        }
+    }
+
+    @Override
+    public List<Pilote> ListePiloteDuPays() {
+        List<Pilote> list = new ArrayList<>();
+        String query = "SELECT * FROM Pilote WHERE pays = ?";
+
+        try (PreparedStatement pstm = dbConnect.prepareStatement(query)) {
+           // pstm.setString(1, pilote.getPays().getNom());
+
+            ResultSet rs = pstm.executeQuery();
+            while (rs.next()) {
+                // Assuming you have a constructor or setters to create a Pilote object
+                Pilote pilote = new Pilote();
+                // Set the properties of the 'pilote' object based on the ResultSet
+                // Add the 'pilote' object to the list
+                list.add(pilote);
+            }
+        } catch (SQLException e) {
+            System.err.println("erreur sql :" + e);
+        }
+
+        return list;
+    }
+    @Override
+    public boolean classementComplet() {
+        String query = "SELECT COUNT(*) FROM Classement WHERE place = 0";
+
+        try (Statement stm = dbConnect.createStatement()) {
+            ResultSet rs = stm.executeQuery(query);
+            if (rs.next()) {
+                int count = rs.getInt(1);
+                return count == 0;
+            }
+        } catch (SQLException e) {
+            System.err.println("erreur sql :" + e);
+
+        }
+
+        return false;
     }
     @Override
     public List<Course> getNotification() {

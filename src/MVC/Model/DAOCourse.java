@@ -1,8 +1,12 @@
 package MVC.Model;
 
 import MVC.Observer.Subject;
+import metier.Classement;
 import metier.Course;
+import metier.Pays;
+import metier.Pilote;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public abstract class DAOCourse extends Subject {
@@ -16,24 +20,23 @@ public abstract class DAOCourse extends Subject {
 
     public abstract List<Course> getCourses();
 
-    // Add the new methods here
-    public abstract List listePaysPilotes();
+    public abstract List<Classement> listePilotePlaceGain(Classement cl);
 
-    public abstract Object gainTotal();
+    public abstract BigDecimal gainTotal();
 
-    public abstract List listePilotePlaceGain();
+    public abstract List<Pays> listePaysPilotes();
 
-    public abstract Object vainqueur();
+    public abstract Pilote vainqueur();
 
-    public abstract Object resultat();
+    public abstract void addPilote(Pilote pilote);
 
-    public abstract boolean addPilote(Course c);
+    public abstract void supPilote(Pilote pilote);
 
-    public abstract boolean supPilote();
+    public abstract Classement resultat(Pilote pilote, int place, BigDecimal gain);
 
-    public abstract boolean modif();
+    public abstract void modif(Pilote pilote, int place, BigDecimal gain);
 
-    public abstract Object classementComplet();
+    public abstract List<Pilote> ListePiloteDuPays();
 
-    public abstract List ListePiloteDuPays();
+    public abstract boolean classementComplet();
 }

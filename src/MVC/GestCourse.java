@@ -3,6 +3,7 @@ package MVC;
 import MVC.Controller.*;
 import MVC.Model.*;
 import MVC.View.*;
+import metier.Course;
 import utilitaires.Utilitaire;
 
 import java.util.Arrays;

@@ -43,31 +43,28 @@ public class CourseViewConsole extends CourseAbstractView {
             }
         } while (true);
     }
-    private void special(Course c) {
-    do {
-        int ch = choixListe(Arrays.asList("commandes en cours", "factures non payees", "factures en retard", "factures payees", "produits achetés", "liste pilote place gain", "menu principal"));
-        if(ch==7) return;
-        List l = switch (ch) {
-            case 1 -> courseController.listePaysPilotes();
-            case 2 -> courseController.gainTotal();
-            case 3 -> courseController.listePilotePlaceGain();
-            case 4 -> courseController.vainqueur();
-            case 5 -> courseController.resultat();
-            case 6 -> courseController.addCourse(c);
-            case 7 -> courseController.addPilote(c);
-            case 8 -> courseController.supPilote();
-            case 9 -> courseController.modif();
-            case 10 -> courseController.classementComplet();
-            case 11 -> courseController.ListePiloteDuPays();
 
 
-            default -> null;
-        };
-        if(l==null || l.isEmpty()) affMsg("aucun élément trouvée");
-        else affList(l);
-    } while (true);
-}
-
+    public void special(Course course) {
+        do {
+            int ch = choixListe(Arrays.asList("Liste Pilote Place Gain", "Gain Total", "Liste Pays Pilotes", "Vainqueur", "Add Pilote", "Sup Pilote", "Resultat", "Modif", "Liste Pilote Du Pays", "Classement Complet", "menu principal"));
+            if(ch==11) return;
+            List l = switch (ch) {
+                case 1 -> List.of(courseController.gainTotal());
+                // Add cases for other possible values here
+                // case 2 -> ...
+                // case 3 -> ...
+                // ...
+                // case 10 -> ...
+                default -> {
+                    affMsg("Invalid choice. Please try again.");
+                    yield null;
+                }
+            };
+            if(l==null || l.isEmpty()) affMsg("aucun élément trouvée");
+            else affList(l);
+        } while (true);
+    }
 
 
     @Override
