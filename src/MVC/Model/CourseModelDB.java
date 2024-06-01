@@ -130,12 +130,14 @@ public class CourseModelDB extends DAOCourse {
     @Override
     public List<Classement> listePilotePlaceGain(Course course) {
         List<Classement> list = new ArrayList<>();
-        String query = "select  pi.idpilote , pi.matricule,pi.nom , pi.prenom , cl.place , cl.gain from apiclassement cl join apipilote pi on cl.idPilote=pi.idPilote where idcourse=? order by cl.place;";
+        String query = "select cl.idclassement, pi.idpilote , pi.matricule,pi.nom , pi.prenom , pi.datenaiss, cl.place , cl.gain from apiclassement cl join apipilote pi on cl.idPilote=pi.idPilote where idcourse=? order by cl.place";
 
         try (PreparedStatement pstm = dbConnect.prepareStatement(query)) {
             pstm.setInt(1, course.getId_course());
+
             ResultSet rs = pstm.executeQuery();
             while (rs.next()) {
+                int idClassement = rs.getInt("idclassement");
                 int idPilote = rs.getInt("idpilote");
                 String matriculePilote = rs.getString("matricule");
                 String nomPilote = rs.getString("nom");
@@ -145,6 +147,7 @@ public class CourseModelDB extends DAOCourse {
                 int place = rs.getInt("place");
                 BigDecimal gain = rs.getBigDecimal("gain");
                 Classement classement = new Classement();
+                classement.setId_classement(idClassement);
                 classement.setPilote(pi);
                 classement.setPlace(place);
                 classement.setGain(gain);
@@ -153,18 +156,18 @@ public class CourseModelDB extends DAOCourse {
         } catch (SQLException e) {
             System.err.println("erreur sql :" + e);
         }
-
         return list;
+
     }
     @Override
     public BigDecimal gainTotal(Course course) {
         BigDecimal total = new BigDecimal(0);
-        String query = "select sum(gain) from apiclassement where idcourse = ?";
+        String query = "select sum(gain) as totalGain from apiclassement where idcourse = ?";
         try (PreparedStatement pstm = dbConnect.prepareStatement(query)) {
             pstm.setInt(1, course.getId_course());
             ResultSet rs = pstm.executeQuery();
-            while (rs.next()) {
-                total = total.add(rs.getBigDecimal("gain"));
+            if (rs.next()) {
+                total = rs.getBigDecimal("totalGain");
             }
         } catch (SQLException e) {
             System.err.println("erreur sql : " + e);
@@ -217,7 +220,8 @@ public class CourseModelDB extends DAOCourse {
 
     @Override
     public void addPilote(Pilote pilote) {
-        String query = "INSERT INTO APIPilote (MATRICULE, NOM, PRENOM, DATENAISS, IDPAYS) VALUES ( ?,?,?, ?, ?)";
+
+        String query = "INSERT INTO APIPilote (MATRICULE, NOM, PRENOM, DATENAISS, IDPAYS) VALUES ( ?,?, ?, ?)";
 
         try (PreparedStatement pstm = dbConnect.prepareStatement(query)) {
             pstm.setString(1, pilote.getMatricule());
@@ -246,9 +250,31 @@ public class CourseModelDB extends DAOCourse {
     }
 
     @Override
-    public Classement resultat(Pilote pilote, int place, BigDecimal gain) {
+    public Classement resultat(Pilote pilote, int place, BigDecimal gain,Course course) {
+        Classement classement = null;
+        String query = "SELECT place ,gain  FROM APIClassement WHERE idpilote = ? and idcourse = ?" ;
 
-        return null;
+        try (PreparedStatement pstm = dbConnect.prepareStatement(query)) {
+            pstm.setInt(1, pilote.getId_pilote());
+            pstm.setInt(2, place);
+            pstm.setBigDecimal(3, gain);
+            pstm.setInt(4, course.getId_course());
+
+            ResultSet rs = pstm.executeQuery();
+            if (rs.next()) {
+                classement = new Classement();
+                classement.setId_classement(rs.getInt("idclassement"));
+                classement.setPilote(pilote);
+                classement.setPlace(rs.getInt("place"));
+                classement.setGain(rs.getBigDecimal("gain"));
+                course.setId_course(rs.getInt("idcourse"));
+            }
+
+        } catch (SQLException e) {
+            System.err.println("erreur sql :" + e);
+        }
+
+        return classement;
     }
 
 
@@ -299,14 +325,13 @@ public class CourseModelDB extends DAOCourse {
         String query = "SELECT * FROM APIClassement where idcourse= ?";
         try (PreparedStatement pstm = dbConnect.prepareStatement(query)) {
             pstm.setInt(1, course.getId_course());
-            ResultSet rs = pstm.executeQuery(query);
+            ResultSet rs = pstm.executeQuery();
             if (rs.next()) {
                 int count = rs.getInt(1);
                 return count == 0;
             }
         } catch (SQLException e) {
             System.err.println("erreur sql :" + e);
-
         }
 
         return false;

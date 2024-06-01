@@ -32,7 +32,7 @@ public abstract class DAOCourse extends Subject {
 
     public abstract void supPilote(Pilote pilote, Course course);
 
-    public abstract Classement resultat(Pilote pilote, int place, BigDecimal gain);
+    public abstract Classement resultat(Pilote pilote, int place, BigDecimal gain, Course course);
 
     public abstract void modif(Pilote pilote, int place, BigDecimal gain, Course course);
 

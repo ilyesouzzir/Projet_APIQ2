@@ -131,6 +131,7 @@ public class Classement {
                 "id_classement=" + id_classement +
                 ", place=" + place +
                 ", gain=" + gain +
+                ", Pilote=" + Pilote +
                 '}';
     }
 }

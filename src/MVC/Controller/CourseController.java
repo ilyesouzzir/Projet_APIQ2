@@ -75,8 +75,8 @@ public class CourseController {
         model.supPilote(pilote,course);
     }
 
-    public Classement resultat(Pilote pilote, int place, BigDecimal gain) {
-        return model.resultat(pilote, place, gain);
+    public Classement resultat(Pilote pilote, int place, BigDecimal gain, Course course) {
+        return model.resultat(pilote, place, gain, course);
     }
 
     public void modif(Pilote pilote, int place, BigDecimal gain,Course course) {

@@ -1,9 +1,11 @@
 package MVC.View;
 
-import MVC.Controller.CourseController;
+
+import metier.Classement;
 import metier.Course;
 import metier.Pays;
 import metier.Pilote;
+
 
 import static utilitaires.Utilitaire.*;
 
@@ -47,7 +49,7 @@ public class CourseViewConsole extends CourseAbstractView {
     }
 
 
-    public void special(Course c, Pilote pilote, Pays pays) {
+    private void special(Course c, Pilote pilote, Pays pays) {
         do {
             int choix = choixListe(Arrays.asList("Liste des pilotes avec place et gain", "Gain total de la course",
                     "Liste des pays des pilotes", "Vainqueur de la course", "Ajout d'un pilote à la course", "Retrait d'un pilote à la course",
@@ -55,24 +57,19 @@ public class CourseViewConsole extends CourseAbstractView {
                     "Menu principal de course")
             );
             switch (choix) {
-                case 1 -> courseController.listePilotePlaceGain(c);
-                case 2 -> courseController.gainTotal(c);
-                case 3 -> courseController.listePaysPilotes(c);
-                case 4 -> courseController.vainqueur(c);
-                case 5 -> courseController.addPilote(pilote);
-                case 6 -> courseController.supPilote(pilote,c);
-                case 7 -> courseController.resultat(pilote, 0,null);
-                case 8 -> courseController.modif(pilote, 0, null,c);
-                case 9 -> courseController.ListePiloteDuPays(c, pays);
-                case 10 -> courseController.classementComplet(c);
-                case 11 -> {
-                    return;
-                }
+              //ok  case 1 -> listePilotePlaceGain2(c);
+              //ok  case 2 -> gainTotal2(c);
+             //ok   case 3 -> ListePaysPilotes2(c);
+                // case 4 -> vainqueur2(c);
+               case 5 -> addPilote2(pilote);
+                case 6 -> supPilote2(pilote, c);
+                case 7 -> resultat2(pilote, 0, null, c);
+                case 8 -> modif2(pilote, 0, null, c);
+                case 9 -> ListePiloteDuPays2(c, pays);
+          //ok      case 10 -> Classementcomplet2(c);
             }
         } while (true);
     }
-
-
 
 
     @Override
@@ -80,8 +77,97 @@ public class CourseViewConsole extends CourseAbstractView {
         affListe(l);
     }
 
+    private void listePilotePlaceGain2(Course c) {
+        List<Classement> lp = courseController.listePilotePlaceGain(c);
+        if (lp.isEmpty()) {
+            affMsg("aucun pilote");
+        } else {
+            affMsg("Liste des pilotes avec place et gain");
+            affList(lp);
+        }
+    }
+
+    private void gainTotal2(Course c) {
+        BigDecimal gainTotal = courseController.gainTotal(c);
+        if (gainTotal == null || gainTotal.compareTo(BigDecimal.ZERO) == 0) {
+            affMsg("aucun gain");
+        } else {
+            affMsg("Gain total de la course : " + gainTotal);
+        }
+    }
+
+    private void ListePaysPilotes2(Course c) {
+        List<Pays> lp = courseController.listePaysPilotes(c);
+        if (lp.isEmpty()) {
+            affMsg("aucun pays");
+        } else {
+            affMsg("Liste des pays des pilotes");
+            affList(lp);
+        }
+    }
+
+    private void vainqueur2(Course c) {
+        Pilote pilote = courseController.vainqueur(c);
+        if (pilote == null) {
+            affMsg("aucun vainqueur");
+        } else {
+            affMsg("Vainqueur de la course : " + pilote);
+        }
+    }
+
+    private void addPilote2(Pilote pilote) {
+        courseController.addPilote(pilote);
+        try {
+            affMsg("Pilote ajouté");
+        } catch (Exception e) {
+            affMsg("Erreur d'ajout de pilote");
+        }
+    }
+
+    private void supPilote2(Pilote pilote, Course course) {
+        courseController.supPilote(pilote, course);
+        try {
+            courseController.supPilote(pilote, course);
+            affMsg("Pilote supprimé");
+        } catch (Exception e) {
+            affMsg("Erreur de suppression de pilote");
+        }
+    }
+
+    private void ListePiloteDuPays2(Course c, Pays pays) {
+        List<Pilote> lp = courseController.ListePiloteDuPays(c, pays);
+        if (lp.isEmpty()) {
+            affMsg("aucun pilote");
+        } else {
+            affMsg("Liste des coureurs du pays de la course");
+            affList(lp);
+        }
+    }
+  private void modif2(Pilote pilote, int place, BigDecimal gain, Course course) {
+        courseController.modif(pilote, place, gain, course);
+
+    }
+    private void resultat2(Pilote pilote, int place, BigDecimal gain, Course course) {
+        Classement cl = courseController.resultat(pilote, place, gain, course);
+        if (cl != null) {
+            System.out.println("Ajout du résultat du pilote avec succès\n");
+        } else {
+            System.out.println("Problème lors de l'enregistrement du résultat\n");
+        }
+    }
+    private boolean Classementcomplet2(Course c) {
+        List<Classement> lp = courseController.listePilotePlaceGain(c);
+        if (lp.isEmpty()) {
+            affMsg("aucun pilote");
+        } else {
+            affMsg("Liste des pilotes avec place et gain");
+            affList(lp);
+        }
+        return true;
+    }
+
     private void modifier() {
-        System.out.println("Veuillez entrer l'ID du cours à modifier : ");
+        System.out.println("Veuillez entrer l'ID de la course à modifier : ");
         int nl = choixElt(lc) - 1;
         Course course = lc.get(nl);
         String nom = modifyIfNotBlank("nom", course.getNom());
@@ -94,7 +180,7 @@ public class CourseViewConsole extends CourseAbstractView {
     }
 
     private void rechercher() {
-        System.out.println("Veuillez entrer l'ID du cours à rechercher : ");
+        System.out.println("Veuillez entrer l'ID de la course à rechercher : ");
         System.out.println("idcourse : ");
         int idCourse = sc.nextInt();
         Course course = courseController.search(idCourse);
@@ -106,7 +192,7 @@ public class CourseViewConsole extends CourseAbstractView {
     }
 
     private void retirer() {
-        System.out.println("Veuillez entrer l'ID du cours à supprimer : ");
+        System.out.println("Veuillez entrer l'ID de la course à supprimer : ");
         int nl = choixElt(lc) - 1;
         Course course = lc.get(nl);
         boolean ok = courseController.removeCourse(course);
