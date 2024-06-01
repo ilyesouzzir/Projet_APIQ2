@@ -128,20 +128,26 @@ public class CourseModelDB extends DAOCourse {
         }
     }
     @Override
-    public List<Classement> listePilotePlaceGain(Classement cl) {
+    public List<Classement> listePilotePlaceGain(Course course) {
         List<Classement> list = new ArrayList<>();
-        String query = "SELECT * FROM Classement ORDER BY place ASC";
+        String query = "select  pi.idpilote , pi.matricule,pi.nom , pi.prenom , cl.place , cl.gain from apiclassement cl join apipilote pi on cl.idPilote=pi.idPilote where idcourse=? order by cl.place;";
 
         try (PreparedStatement pstm = dbConnect.prepareStatement(query)) {
-            pstm.setInt(1, cl.getPlace());
-            pstm.setBigDecimal(2, cl.getGain());
-
+            pstm.setInt(1, course.getId_course());
             ResultSet rs = pstm.executeQuery();
             while (rs.next()) {
-                // Assuming you have a constructor or setters to create a Classement object
+                int idPilote = rs.getInt("idpilote");
+                String matriculePilote = rs.getString("matricule");
+                String nomPilote = rs.getString("nom");
+                String prenomPilote = rs.getString("prenom");
+                LocalDate dateNaissPilote = rs.getDate("dateNaiss").toLocalDate();
+                Pilote pi = new Pilote(idPilote, matriculePilote, nomPilote, prenomPilote, dateNaissPilote);
+                int place = rs.getInt("place");
+                BigDecimal gain = rs.getBigDecimal("gain");
                 Classement classement = new Classement();
-                // Set the properties of the 'classement' object based on the ResultSet
-                // Add the 'classement' object to the list
+                classement.setPilote(pi);
+                classement.setPlace(place);
+                classement.setGain(gain);
                 list.add(classement);
             }
         } catch (SQLException e) {
@@ -149,74 +155,76 @@ public class CourseModelDB extends DAOCourse {
         }
 
         return list;
-
     }
-
     @Override
-    public BigDecimal gainTotal() {
-        BigDecimal totalGain = BigDecimal.ZERO;
-        String query = "SELECT SUM(gain) FROM Classement";
-
-        try (Statement stm = dbConnect.createStatement()) {
-            ResultSet rs = stm.executeQuery(query);
-            if (rs.next()) {
-                totalGain = rs.getBigDecimal(1);
-            }
-        } catch (SQLException e) {
-            System.err.println("erreur sql :" + e);
-        }
-
-        return totalGain;
-    }
-
-    @Override
-    public List<Pays> listePaysPilotes() {
-        List<Pays> list = new ArrayList<>();
-        String query = "SELECT DISTINCT Pays FROM Pilote";
-
-        try (Statement stm = dbConnect.createStatement()) {
-            ResultSet rs = stm.executeQuery(query);
+    public BigDecimal gainTotal(Course course) {
+        BigDecimal total = new BigDecimal(0);
+        String query = "select sum(gain) from apiclassement where idcourse = ?";
+        try (PreparedStatement pstm = dbConnect.prepareStatement(query)) {
+            pstm.setInt(1, course.getId_course());
+            ResultSet rs = pstm.executeQuery();
             while (rs.next()) {
-                // Assuming you have a constructor or setters to create a Pays object
-                Pays pays = new Pays();
-                // Set the properties of the 'pays' object based on the ResultSet
-                // Add the 'pays' object to the list
-                list.add(pays);
+                total = total.add(rs.getBigDecimal("gain"));
             }
         } catch (SQLException e) {
-            System.err.println("erreur sql :" + e);
+            System.err.println("erreur sql : " + e);
         }
+        return total;
+    }
 
-        return list;
+    @Override
+    public List<Pays> listePaysPilotes(Course course) {
+        List<Pays> liste = new ArrayList<>();
+        String query = "SELECT distinct p.idPays, p.sigle, p.nom, p.langue \n" +
+                "FROM apipays p \n" +
+                "JOIN apipilote pi ON p.idPays=pi.idPays\n" +
+                "JOIN apiclassement cl ON cl.idPilote = pi.idPilote\n" +
+                "WHERE cl.idCourse = ?";
+        try (PreparedStatement pstm = dbConnect.prepareStatement(query)) {
+            pstm.setInt(1, course.getId_course());
+            ResultSet rs = pstm.executeQuery();
+            while (rs.next()) {
+                int idPays = rs.getInt("idPays");
+                String sigle = rs.getString("sigle");
+                String nomPays = rs.getString("nom");
+                String langue = rs.getString("langue");
+                Pays p = new Pays(idPays, sigle, nomPays, langue);
+                if (!liste.contains(p)) {
+                    liste.add(p);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("erreur sql : " + e);
+        }
+        return liste;
     }
     @Override
-    public Pilote vainqueur() {
-        Pilote pilote = null;
-        String query = "SELECT * FROM Pilote WHERE id_pilote = (SELECT pilote_id FROM Classement WHERE place = 1 )";
-
-        try (Statement stm = dbConnect.createStatement()) {
-            ResultSet rs = stm.executeQuery(query);
+    public Pilote vainqueur(Course course) {
+        Pilote p = null;
+        String query = "select * from apiclassement cl join apipilote pi on cl.idpilote = pi.idpilote where cl.idcourse = ? and cl.place = 1";
+        try (PreparedStatement pstm = dbConnect.prepareStatement(query)) {
+            pstm.setInt(1, course.getId_course());
+            ResultSet rs = pstm.executeQuery();
             if (rs.next()) {
-                // Assuming you have a constructor or setters to create a Pilote object
-                pilote = new Pilote();
-                // Set the properties of the 'pilote' object based on the ResultSet
+                // aide par SatckOverflow pour savoir que je pouvais mettre les noms des colonnes pour qu'ils reconnaissent mieux quand il y a plusieurs tables
+                p = new Pilote(rs.getInt("idPilote"), rs.getString("matricule"), rs.getString("nom"), rs.getString("prenom"), rs.getDate("datenaiss").toLocalDate());
             }
         } catch (SQLException e) {
-            System.err.println("erreur sql :" + e);
+            System.err.println("erreur sql : " + e);
         }
-
-        return pilote;
+        return p;
     }
 
     @Override
     public void addPilote(Pilote pilote) {
-        String query = "INSERT INTO Pilote (id_pilote, nom, prenom, pays) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO APIPilote (MATRICULE, NOM, PRENOM, DATENAISS, IDPAYS) VALUES ( ?,?,?, ?, ?)";
 
         try (PreparedStatement pstm = dbConnect.prepareStatement(query)) {
-            pstm.setInt(1, pilote.getId_pilote());
+            pstm.setString(1, pilote.getMatricule());
             pstm.setString(2, pilote.getNom());
             pstm.setString(3, pilote.getPrenom());
-            pstm.setString(4, pilote.getPays().getNom());
+            pstm.setDate(4, java.sql.Date.valueOf(pilote.getDatenaiss()));
+            pstm.setString(5, pilote.getPays().getNom());
 
             pstm.executeUpdate();
         } catch (SQLException e) {
@@ -224,58 +232,35 @@ public class CourseModelDB extends DAOCourse {
         }
     }
     @Override
-    public void supPilote(Pilote pilote) {
-        String query = "DELETE FROM Pilote WHERE id_pilote = ?";
+    public void supPilote(Pilote pilote,Course course) {
+        String query = "DELETE FROM APICLASSEMENT WHERE idpilote = ? and where idcourse = ? ";
 
         try (PreparedStatement pstm = dbConnect.prepareStatement(query)) {
             pstm.setInt(1, pilote.getId_pilote());
+            pstm.setInt(2, course.getId_course());
 
             pstm.executeUpdate();
         } catch (SQLException e) {
             System.err.println("erreur sql :" + e);
         }
     }
+
     @Override
     public Classement resultat(Pilote pilote, int place, BigDecimal gain) {
-        Classement classement = null;
-        String query = "INSERT INTO Classement (pilote_id, place, gain) VALUES (?, ?, ?)";
 
-        try (PreparedStatement pstm = dbConnect.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-            pstm.setInt(1, pilote.getId_pilote());
-            pstm.setInt(2, place);
-            pstm.setBigDecimal(3, gain);
-
-            int affectedRows = pstm.executeUpdate();
-
-            if (affectedRows == 0) {
-                throw new SQLException("Creating user failed, no rows affected.");
-            }
-
-            try (ResultSet generatedKeys = pstm.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    classement = new Classement();
-                    classement.setId_classement(generatedKeys.getInt(1));
-                    classement.setPilote(pilote);
-                    classement.setPlace(place);
-                    classement.setGain(gain);
-                } else {
-                    throw new SQLException("Creating user failed, no ID obtained.");
-                }
-            }
-        } catch (SQLException e) {
-            System.err.println("erreur sql :" + e);
-        }
-
-        return classement;
+        return null;
     }
+
+
     @Override
-    public void modif(Pilote pilote, int place, BigDecimal gain) {
-        String query = "UPDATE Classement SET place = ?, gain = ? WHERE pilote_id = ?";
+    public void modif(Pilote pilote, int place, BigDecimal gain, Course course) {
+        String query = "UPDATE APIClassement SET place = ?, gain = ? WHERE idpilote = ? and idcourse = ?";
 
         try (PreparedStatement pstm = dbConnect.prepareStatement(query)) {
             pstm.setInt(1, place);
             pstm.setBigDecimal(2, gain);
             pstm.setInt(3, pilote.getId_pilote());
+            pstm.setInt(4, course.getId_course());
 
             pstm.executeUpdate();
         } catch (SQLException e) {
@@ -284,33 +269,37 @@ public class CourseModelDB extends DAOCourse {
     }
 
     @Override
-    public List<Pilote> ListePiloteDuPays() {
-        List<Pilote> list = new ArrayList<>();
-        String query = "SELECT * FROM Pilote WHERE pays = ?";
-
+    public List<Pilote> ListePiloteDuPays(Course course,Pays pays) {
+        List<Pilote> liste = new ArrayList<>();
+        String query = "select pi.* from apipilote pi\n" +
+                "                JOIN apiclassement cl on cl.idpilote = pi.idPilote\n" +
+                "                JOIN apicourse c on c.idcourse=cl.idcourse\n" +
+                "                WHERE c.idcourse = ? and pi.idpays = ?";
         try (PreparedStatement pstm = dbConnect.prepareStatement(query)) {
-           // pstm.setString(1, pilote.getPays().getNom());
+            pstm.setInt(1, course.getId_course());
+            pstm.setInt(2, pays.getId_pays());
 
             ResultSet rs = pstm.executeQuery();
             while (rs.next()) {
-                // Assuming you have a constructor or setters to create a Pilote object
-                Pilote pilote = new Pilote();
-                // Set the properties of the 'pilote' object based on the ResultSet
-                // Add the 'pilote' object to the list
-                list.add(pilote);
+                int idPilote = rs.getInt("idpilote");
+                String matriculePilote = rs.getString("matricule");
+                String nomPilote = rs.getString("nom");
+                String prenomPilote = rs.getString("prenom");
+                LocalDate dateNaissPilote = rs.getDate("dateNaiss").toLocalDate();
+                Pilote pi = new Pilote(idPilote, matriculePilote, nomPilote, prenomPilote, dateNaissPilote);
+                liste.add(pi);
             }
         } catch (SQLException e) {
-            System.err.println("erreur sql :" + e);
+            System.err.println("erreur sql : " + e);
         }
-
-        return list;
+        return liste;
     }
     @Override
-    public boolean classementComplet() {
-        String query = "SELECT COUNT(*) FROM Classement WHERE place = 0";
-
-        try (Statement stm = dbConnect.createStatement()) {
-            ResultSet rs = stm.executeQuery(query);
+    public boolean classementComplet(Course course) {
+        String query = "SELECT * FROM APIClassement where idcourse= ?";
+        try (PreparedStatement pstm = dbConnect.prepareStatement(query)) {
+            pstm.setInt(1, course.getId_course());
+            ResultSet rs = pstm.executeQuery(query);
             if (rs.next()) {
                 int count = rs.getInt(1);
                 return count == 0;

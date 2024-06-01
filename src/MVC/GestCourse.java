@@ -22,7 +22,6 @@ public class GestCourse {
     private PiloteAbstractView pv;
     private VilleAbstractView vv;
     private PaysAbstractView pyv;
-
     public void gestion() {
         cm = new CourseModelDB();
         pm = new PiloteModelDB();
@@ -38,13 +37,12 @@ public class GestCourse {
         pc = new PiloteController(pm, pv);
         vc = new VilleController(vm, vv);
         pyc = new PaysController(pym, pyv);
-
         cm.addObserver(cv);
         pm.addObserver(pv);
         vm.addObserver(vv);
         pym.addObserver(pyv);
 
-        List<String> loptions = Arrays.asList("courses", "pilotes", "ville", "pays", "fin");
+        List<String> loptions = Arrays.asList("courses", "pilotes", "ville", "pays" ,"fin");
         do {
             int ch = Utilitaire.choixListe(loptions);
             switch (ch) {

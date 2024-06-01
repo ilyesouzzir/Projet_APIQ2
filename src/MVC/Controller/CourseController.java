@@ -49,21 +49,21 @@ public class CourseController {
         }
     }
 
-    public List<Classement> ListePilotePlacecGain(Classement cl) {
-        return model.listePilotePlaceGain(cl);
+    public List<Classement> listePilotePlaceGain(Course course) {
+        return model.listePilotePlaceGain(course);
     }
 
 
-    public BigDecimal gainTotal() {
-        return model.gainTotal();
+    public BigDecimal gainTotal(Course course) {
+        return model.gainTotal(course);
     }
 
-    public List<Pays> listePaysPilotes() {
-        return model.listePaysPilotes();
+    public List<Pays> listePaysPilotes(Course course) {
+        return model.listePaysPilotes(course);
     }
 
-    public Pilote vainqueur() {
-        return model.vainqueur();
+    public Pilote vainqueur(Course course) {
+        return model.vainqueur(course);
     }
 
     public void addPilote(Pilote pilote) {
@@ -71,24 +71,24 @@ public class CourseController {
     }
 
 
-    public void supPilote(Pilote pilote) {
-        model.supPilote(pilote);
+    public void supPilote(Pilote pilote,Course course) {
+        model.supPilote(pilote,course);
     }
 
     public Classement resultat(Pilote pilote, int place, BigDecimal gain) {
         return model.resultat(pilote, place, gain);
     }
 
-    public void modif(Pilote pilote, int place, BigDecimal gain) {
-        model.modif(pilote, place, gain);
+    public void modif(Pilote pilote, int place, BigDecimal gain,Course course) {
+        model.modif(pilote, place, gain,course);
     }
 
-    public List<Pilote> ListePiloteDuPays() {
-        return model.ListePiloteDuPays();
+    public List<Pilote> ListePiloteDuPays(Course course,Pays pays) {
+        return model.ListePiloteDuPays(course,pays);
     }
 
 
-    public boolean classementComplet() {
-        return model.classementComplet();
+    public boolean classementComplet(Course course) {
+        return model.classementComplet(course);
     }
 }

@@ -2,6 +2,8 @@ package MVC.View;
 
 import MVC.Controller.CourseController;
 import metier.Course;
+import metier.Pays;
+import metier.Pilote;
 
 import static utilitaires.Utilitaire.*;
 
@@ -45,26 +47,32 @@ public class CourseViewConsole extends CourseAbstractView {
     }
 
 
-    public void special(Course course) {
+    public void special(Course c, Pilote pilote, Pays pays) {
         do {
-            int ch = choixListe(Arrays.asList("Liste Pilote Place Gain", "Gain Total", "Liste Pays Pilotes", "Vainqueur", "Add Pilote", "Sup Pilote", "Resultat", "Modif", "Liste Pilote Du Pays", "Classement Complet", "menu principal"));
-            if(ch==11) return;
-            List l = switch (ch) {
-                case 1 -> List.of(courseController.gainTotal());
-                // Add cases for other possible values here
-                // case 2 -> ...
-                // case 3 -> ...
-                // ...
-                // case 10 -> ...
-                default -> {
-                    affMsg("Invalid choice. Please try again.");
-                    yield null;
+            int choix = choixListe(Arrays.asList("Liste des pilotes avec place et gain", "Gain total de la course",
+                    "Liste des pays des pilotes", "Vainqueur de la course", "Ajout d'un pilote à la course", "Retrait d'un pilote à la course",
+                    "Enregistrement d'un résultat", "Modification d'un pilote", "Liste des coureurs du pays de la course", "Classement complet",
+                    "Menu principal de course")
+            );
+            switch (choix) {
+                case 1 -> courseController.listePilotePlaceGain(c);
+                case 2 -> courseController.gainTotal(c);
+                case 3 -> courseController.listePaysPilotes(c);
+                case 4 -> courseController.vainqueur(c);
+                case 5 -> courseController.addPilote(pilote);
+                case 6 -> courseController.supPilote(pilote,c);
+                case 7 -> courseController.resultat(pilote, 0,null);
+                case 8 -> courseController.modif(pilote, 0, null,c);
+                case 9 -> courseController.ListePiloteDuPays(c, pays);
+                case 10 -> courseController.classementComplet(c);
+                case 11 -> {
+                    return;
                 }
-            };
-            if(l==null || l.isEmpty()) affMsg("aucun élément trouvée");
-            else affList(l);
+            }
         } while (true);
     }
+
+
 
 
     @Override
@@ -91,7 +99,10 @@ public class CourseViewConsole extends CourseAbstractView {
         int idCourse = sc.nextInt();
         Course course = courseController.search(idCourse);
         if (course == null) affMsg("recherche infructueuse");
-        else affMsg(course.toString());
+        else {
+            affMsg(course.toString());
+            special(course, null, null);
+        }
     }
 
     private void retirer() {
