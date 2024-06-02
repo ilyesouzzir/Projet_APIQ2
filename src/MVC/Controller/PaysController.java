@@ -4,6 +4,7 @@ import MVC.Model.DAOPays;
 import MVC.View.PaysAbstractView;
 import MVC.View.VilleAbstractView;
 import metier.Pays;
+import metier.Pilote;
 
 import java.util.List;
 
@@ -41,5 +42,8 @@ public class PaysController {
         if (this.view != null) {
             this.view.setController(this);
         }
+    }
+    public List<Pilote> listePilotes(Pays pays){
+        return model.listePilotes(pays);
     }
 }

@@ -11,13 +11,14 @@ public abstract class PaysAbstractView implements Observer {
     protected PaysController paysController;
     protected List<Pays> lp;
 
-    public void setController(MVC.Controller.PaysController paysController){
+    public void setController(MVC.Controller.PaysController paysController) {
         this.paysController = paysController;
     }
 
     public abstract void affMsg(String msg);
 
     public abstract Pays selectionner();
+
     public abstract void menu();
 
     public abstract void affList(List l);

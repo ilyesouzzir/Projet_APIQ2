@@ -9,10 +9,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PaysModelDB extends DAOPays {
+public class PaysModelDBHyb extends DAOPays {
     protected Connection dbConnect;
 
-    public PaysModelDB() {
+    public PaysModelDBHyb() {
         dbConnect = DBConnection.getConnection();
         if (dbConnect == null) {
             System.err.println("erreur de connexion");
@@ -131,7 +131,7 @@ public class PaysModelDB extends DAOPays {
     @Override
     public List<Pilote> listePilotes(Pays pays) {
         List<Pilote> liste = new ArrayList<>();
-        String query = "select * from APIPilote where idPays = ?";
+        String query = "select * from PilotesInVille  where idPays = ?";
         try (PreparedStatement pstm = dbConnect.prepareStatement(query)) {
             pstm.setInt(1, pays.getId_pays());
             ResultSet rs = pstm.executeQuery();
@@ -150,7 +150,6 @@ public class PaysModelDB extends DAOPays {
             return null;
         }
     }
-
     @Override
     public List<Pays> getNotification() {
         return getPays();

@@ -2,6 +2,8 @@ package MVC.View;
 
 import MVC.View.PaysAbstractView;
 import metier.Pays;
+import metier.Pilote;
+
 import static utilitaires.Utilitaire.*;
 
 import java.util.Arrays;
@@ -39,7 +41,26 @@ public class PaysViewConsole extends PaysAbstractView {
             }
         } while (true);
     }
-
+    public void special(Pays p) {
+        do {
+            int choix = choixListe(Arrays.asList("Liste des pilotes du pays", "Menu principal"));
+            switch (choix) {
+                case 1 -> listePilotes(p);
+                case 2 -> {
+                    return;
+                }
+            }
+        } while (true);
+    }
+    public void listePilotes(Pays pays) {
+        List<Pilote> liste = paysController.listePilotes(pays);
+        if (liste.isEmpty()) {
+            System.out.println("La liste est null\n");
+        } else {
+            System.out.println("Liste des pilotes du pays " + pays.getNom() + " : ");
+            System.out.println(liste);
+        }
+    }
 
     @Override
     public void affList(List l) {
@@ -67,6 +88,7 @@ public class PaysViewConsole extends PaysAbstractView {
         Pays p = paysController.search(idPays);
         if(p == null) affMsg("recherche infructueuse");
         else affMsg(p.toString());
+        special(p);
     }
 
     private void retirer() {
