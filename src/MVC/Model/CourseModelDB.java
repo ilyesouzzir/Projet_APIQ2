@@ -219,84 +219,140 @@ public class CourseModelDB extends DAOCourse {
     }
 
     @Override
-    public void addPilote(Pilote pilote) {
-
-        String query = "INSERT INTO APIPilote (MATRICULE, NOM, PRENOM, DATENAISS, IDPAYS) VALUES ( ?,?, ?, ?)";
-
-        try (PreparedStatement pstm = dbConnect.prepareStatement(query)) {
-            pstm.setString(1, pilote.getMatricule());
-            pstm.setString(2, pilote.getNom());
-            pstm.setString(3, pilote.getPrenom());
-            pstm.setDate(4, java.sql.Date.valueOf(pilote.getDatenaiss()));
-            pstm.setString(5, pilote.getPays().getNom());
-
-            pstm.executeUpdate();
+    public boolean addPilote(Pilote pilote, Course course) {
+        String query = "select * from apiclassement where idPilote=? and idCourse=?";
+        String query1 = "insert into apiclassement(place, gain, idpilote, idCourse) values(?,?,?,?)";
+        String query2 = "select idclassement from apiclassement where place=? and gain=? and idPilote=? and idCourse=?";
+        try (PreparedStatement pstm = dbConnect.prepareStatement(query);
+             PreparedStatement pstm1 = dbConnect.prepareStatement(query1);
+             PreparedStatement pstm2 = dbConnect.prepareStatement(query2)
+        ) {
+            pstm.setInt(1, pilote.getId_pilote());
+            pstm.setInt(2, course.getId_course());
+            ResultSet rs1 = pstm.executeQuery();
+            if (rs1.next()) {
+                System.out.println("La pilote est déjà enregistré dans la course\n");
+                return false;
+            } else {
+                pstm1.setInt(1, 0);
+                pstm1.setBigDecimal(2, BigDecimal.ZERO);
+                pstm1.setInt(3, pilote.getId_pilote());
+                pstm1.setInt(4, course.getId_course());
+                int n = pstm1.executeUpdate();
+                if (n == 1) {
+                    pstm2.setInt(1, 0);
+                    pstm2.setBigDecimal(2, BigDecimal.ZERO);
+                    pstm2.setInt(3, pilote.getId_pilote());
+                    pstm2.setInt(4, course.getId_course());
+                    ResultSet rs = pstm2.executeQuery();
+                    if (rs.next()) {
+                        return true;
+                    } else {
+                        System.err.println("record introuvable");
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+            }
         } catch (SQLException e) {
-            System.err.println("erreur sql :" + e);
+            System.err.println("erreur sql : " + e);
+            return false;
         }
     }
     @Override
-    public void supPilote(Pilote pilote,Course course) {
-        String query = "DELETE FROM APICLASSEMENT WHERE idpilote = ? and where idcourse = ? ";
+    public boolean supPilote(Pilote pilote, Course course) {
+        String query = "DELETE FROM APICLASSEMENT WHERE idpilote = ? AND idcourse = ?";
 
         try (PreparedStatement pstm = dbConnect.prepareStatement(query)) {
             pstm.setInt(1, pilote.getId_pilote());
             pstm.setInt(2, course.getId_course());
-
-            pstm.executeUpdate();
+            int n = pstm.executeUpdate();
+            if (n != 0) {
+                System.out.println("Le pilote a bien été supprimé de la course");
+                return true;
+            } else {
+                System.err.println("Le pilote n'existe pas pour cette course");
+                return false;
+            }
         } catch (SQLException e) {
             System.err.println("erreur sql :" + e);
+            return false;
         }
     }
 
     @Override
     public Classement resultat(Pilote pilote, int place, BigDecimal gain,Course course) {
-        Classement classement = null;
-        String query = "SELECT place ,gain  FROM APIClassement WHERE idpilote = ? and idcourse = ?" ;
-
-        try (PreparedStatement pstm = dbConnect.prepareStatement(query)) {
-            pstm.setInt(1, pilote.getId_pilote());
-            pstm.setInt(2, place);
-            pstm.setBigDecimal(3, gain);
-            pstm.setInt(4, course.getId_course());
-
-            ResultSet rs = pstm.executeQuery();
+        String query1 = "select * from apiclassement where idPilote = ? and idCourse = ?";
+        String query2 = "insert into apiclassement(place, gain, idpilote, idcourse) values (?,?,?,?)";
+        try (PreparedStatement pstm1 = dbConnect.prepareStatement(query1);
+             PreparedStatement pstm2 = dbConnect.prepareStatement(query2)
+        ) {
+            pstm1.setInt(1, pilote.getId_pilote());
+            pstm1.setInt(2, course.getId_course());
+            ResultSet rs = pstm1.executeQuery();
             if (rs.next()) {
-                classement = new Classement();
-                classement.setId_classement(rs.getInt("idclassement"));
-                classement.setPilote(pilote);
-                classement.setPlace(rs.getInt("place"));
-                classement.setGain(rs.getBigDecimal("gain"));
-                course.setId_course(rs.getInt("idcourse"));
+                pstm2.setInt(1, place);
+                pstm2.setBigDecimal(2, gain);
+                pstm2.setInt(3, pilote.getId_pilote());
+                pstm2.setInt(4, course.getId_course());
+                int n = pstm2.executeUpdate();
+                if (n == 1) {
+                    return new Classement(place, gain, pilote);
+                } else {
+                    System.err.println("record introuvable");
+                    return null;
+                }
+            } else {
+                System.err.println("Le pilote n'est pas inscrit pour cette course\n");
+                return null;
             }
-
         } catch (SQLException e) {
-            System.err.println("erreur sql :" + e);
+            System.err.println("erreur sql : " + e);
+            return null;
         }
-
-        return classement;
     }
 
 
     @Override
-    public void modif(Pilote pilote, int place, BigDecimal gain, Course course) {
-        String query = "UPDATE APIClassement SET place = ?, gain = ? WHERE idpilote = ? and idcourse = ?";
+public boolean modif(Pilote pilote, int place, BigDecimal gain, Course course) {
+    String query = "UPDATE APIClassement SET place = ?, gain = ? WHERE idpilote = ? and idcourse = ?";
 
+    try (PreparedStatement pstm = dbConnect.prepareStatement(query)) {
+        pstm.setInt(1, place);
+        pstm.setBigDecimal(2, gain);
+        pstm.setInt(3, pilote.getId_pilote());
+        pstm.setInt(4, course.getId_course());
+
+        pstm.executeUpdate();
+    } catch (SQLException e) {
+        System.err.println("erreur sql :" + e);
+    }
+    if (place == -1) {
+        query = "update apiclassement set place = ?, gain = ? where idCourse = ? and idPilote = ?";
         try (PreparedStatement pstm = dbConnect.prepareStatement(query)) {
             pstm.setInt(1, place);
             pstm.setBigDecimal(2, gain);
-            pstm.setInt(3, pilote.getId_pilote());
-            pstm.setInt(4, course.getId_course());
-
-            pstm.executeUpdate();
+            pstm.setInt(3, course.getId_course());
+            pstm.setInt(4, pilote.getId_pilote());
+            int n = pstm.executeUpdate();
+            if (n != 0) {
+                return true;
+            } else {
+                System.err.println("Le pilote n'est pas inscrit dans cette course");
+                return false;
+            }
         } catch (SQLException e) {
-            System.err.println("erreur sql :" + e);
+            System.err.println("erreur sql : " + e);
+            return false;
         }
-    }
+}
+return true;
+}
 
     @Override
-    public List<Pilote> ListePiloteDuPays(Course course,Pays pays) {
-        List<Pilote> liste = new ArrayList<>();
+    public List<Pilote> ListePiloteDuPays(Course course, Pays pays) {
+        List<Pilote> listeP = new ArrayList<>();
         String query = "select pi.* from apipilote pi\n" +
                 "                JOIN apiclassement cl on cl.idpilote = pi.idPilote\n" +
                 "                JOIN apicourse c on c.idcourse=cl.idcourse\n" +
@@ -304,7 +360,6 @@ public class CourseModelDB extends DAOCourse {
         try (PreparedStatement pstm = dbConnect.prepareStatement(query)) {
             pstm.setInt(1, course.getId_course());
             pstm.setInt(2, pays.getId_pays());
-
             ResultSet rs = pstm.executeQuery();
             while (rs.next()) {
                 int idPilote = rs.getInt("idpilote");
@@ -312,24 +367,27 @@ public class CourseModelDB extends DAOCourse {
                 String nomPilote = rs.getString("nom");
                 String prenomPilote = rs.getString("prenom");
                 LocalDate dateNaissPilote = rs.getDate("dateNaiss").toLocalDate();
-                Pilote pi = new Pilote(idPilote, matriculePilote, nomPilote, prenomPilote, dateNaissPilote);
-                liste.add(pi);
+                Pilote pilote = new Pilote(idPilote, matriculePilote, nomPilote, prenomPilote, dateNaissPilote);
+                listeP.add(pilote);
             }
         } catch (SQLException e) {
             System.err.println("erreur sql : " + e);
         }
-        return liste;
+        return listeP;
     }
     @Override
     public boolean classementComplet(Course course) {
-        String query = "SELECT * FROM APIClassement where idcourse= ?";
+        String query = "SELECT place FROM APIClassement where idcourse= ?";
         try (PreparedStatement pstm = dbConnect.prepareStatement(query)) {
             pstm.setInt(1, course.getId_course());
             ResultSet rs = pstm.executeQuery();
             if (rs.next()) {
-                int count = rs.getInt(1);
-                return count == 0;
+                int place = rs.getInt(1);
+                if (place != -1 && place < 1) {
+                    return false;
+                }
             }
+            return true;
         } catch (SQLException e) {
             System.err.println("erreur sql :" + e);
         }

@@ -49,7 +49,8 @@ public class CourseViewConsole extends CourseAbstractView {
     }
 
 
-    private void special(Course c, Pilote pilote, Pays pays) {
+    private void special(Course c, Pays p) {
+
         do {
             int choix = choixListe(Arrays.asList("Liste des pilotes avec place et gain", "Gain total de la course",
                     "Liste des pays des pilotes", "Vainqueur de la course", "Ajout d'un pilote à la course", "Retrait d'un pilote à la course",
@@ -57,16 +58,16 @@ public class CourseViewConsole extends CourseAbstractView {
                     "Menu principal de course")
             );
             switch (choix) {
-              //ok  case 1 -> listePilotePlaceGain2(c);
-              //ok  case 2 -> gainTotal2(c);
-             //ok   case 3 -> ListePaysPilotes2(c);
-                // case 4 -> vainqueur2(c);
-               case 5 -> addPilote2(pilote);
-                case 6 -> supPilote2(pilote, c);
-                case 7 -> resultat2(pilote, 0, null, c);
-                case 8 -> modif2(pilote, 0, null, c);
-                case 9 -> ListePiloteDuPays2(c, pays);
-          //ok      case 10 -> Classementcomplet2(c);
+                //case 1 -> listePilotePlaceGain2(c);
+                //case 2 -> gainTotal2(c);
+                //case 3 -> ListePaysPilotes2(c);
+                 //case 4 -> vainqueur2(c);
+               case 5 -> addPilote2(c);
+                case 6 -> supPilote2( c);
+                case 7 -> resultat2(c);
+                //case 8 -> modif2(c);
+                case 9 -> ListePiloteDuPays2(c,p);
+                //case 10 -> Classementcomplet2(c);
             }
         } while (true);
     }
@@ -115,55 +116,76 @@ public class CourseViewConsole extends CourseAbstractView {
         }
     }
 
-    private void addPilote2(Pilote pilote) {
-        courseController.addPilote(pilote);
-        try {
-            affMsg("Pilote ajouté");
-        } catch (Exception e) {
-            affMsg("Erreur d'ajout de pilote");
+    public void addPilote2(Course c) {
+        System.out.println("Ajout d'un pilote à la course : " + c.getNom());
+        Pilote p = pv.selectionner();
+        boolean ok = courseController.addPilote(p, c);
+        if (ok) {
+            affMsg("Pilote ajouté\n");
+        } else {
+            affMsg("Erreur lors de l'ajout du pilote\n");
         }
     }
 
-    private void supPilote2(Pilote pilote, Course course) {
-        courseController.supPilote(pilote, course);
+    public void supPilote2(Course c) {
+        System.out.println("Pilote à supprimer de la course (indiquer le n° de la ligne): ");
+        Pilote p = pv.selectionner();
+        if (p == null) {
+            affMsg("Aucun pilote sélectionné. Opération annulée.");
+            return;
+        }
         try {
-            courseController.supPilote(pilote, course);
-            affMsg("Pilote supprimé");
+            courseController.supPilote(p, c);
+            affMsg("pilote supprimé avec succès de la course\n");
         } catch (Exception e) {
-            affMsg("Erreur de suppression de pilote");
+            affMsg("Erreur lors de la suppression du pilote de la course: " + e.getMessage());
         }
     }
 
-    private void ListePiloteDuPays2(Course c, Pays pays) {
-        List<Pilote> lp = courseController.ListePiloteDuPays(c, pays);
+    private void ListePiloteDuPays2(Course c,Pays p) {
+        List<Pilote> lp = courseController.ListePiloteDuPays(c,p);
         if (lp.isEmpty()) {
             affMsg("aucun pilote");
         } else {
-            affMsg("Liste des coureurs du pays de la course");
+            System.out.println("Liste des pilotes pour le pays de la course " + c.getNom() + " : ");
             affList(lp);
         }
     }
-  private void modif2(Pilote pilote, int place, BigDecimal gain, Course course) {
-        courseController.modif(pilote, place, gain, course);
+    public void modif2(Course c) {
+        Pilote p = pv.selectionner();
 
+        System.out.println("Nouvelle place : ");
+        int place = lireInt();
+        System.out.println("Nouveau gain : ");
+        BigDecimal gain = sc.nextBigDecimal();
+        boolean m = courseController.modif(p, place, gain, c);
+        if (m) {
+            affMsg("Modifié avec succès\n");
+        } else {
+            affMsg("Problème lors de la modification\n");
+        }
     }
-    private void resultat2(Pilote pilote, int place, BigDecimal gain, Course course) {
-        Classement cl = courseController.resultat(pilote, place, gain, course);
+    public void resultat2(Course c) {
+        Pilote p = pv.selectionner();
+        System.out.println("Place : ");
+        int place = lireInt();
+        System.out.println("Gain : ");
+        BigDecimal gain = sc.nextBigDecimal();
+        Classement cl = courseController.resultat(p, place, gain, c);
         if (cl != null) {
-            System.out.println("Ajout du résultat du pilote avec succès\n");
+            affMsg("Ajout du résultat du pilote avec succès\n");
         } else {
-            System.out.println("Problème lors de l'enregistrement du résultat\n");
+            affMsg("Problème lors de l'enregistrement du résultat\n");
         }
     }
-    private boolean Classementcomplet2(Course c) {
-        List<Classement> lp = courseController.listePilotePlaceGain(c);
-        if (lp.isEmpty()) {
-            affMsg("aucun pilote");
+
+    private void Classementcomplet2(Course course) {
+        boolean cl = courseController.classementComplet(course);
+        if (cl) {
+            affMsg("Tous les pilotes inscrits ont une place\n");
         } else {
-            affMsg("Liste des pilotes avec place et gain");
-            affList(lp);
+            affMsg("Des pilotes n'ont pas de place encore\n");
         }
-        return true;
     }
 
     private void modifier() {
@@ -187,7 +209,7 @@ public class CourseViewConsole extends CourseAbstractView {
         if (course == null) affMsg("recherche infructueuse");
         else {
             affMsg(course.toString());
-            special(course, null, null);
+            special(course, null);
         }
     }
 
@@ -201,22 +223,40 @@ public class CourseViewConsole extends CourseAbstractView {
     }
 
     private void ajouter() {
-        System.out.print("nom : ");
+        System.out.print("Nom de la course : ");
         String nom = sc.nextLine();
-        System.out.print("km: ");
-        int km = Integer.parseInt(sc.nextLine());
-        System.out.print("dateCourse (format YYYY-MM-DD): ");
+        int km;
+        do {
+            System.out.print("Km de la course : ");
+            km = Integer.parseInt(sc.nextLine());
+            if (km < 0) {
+                System.err.println("Km doit être >= à 0");
+            }
+        } while (km < 0);
+        System.out.print("Date de la course (format YYYY-MM-DD): ");
         LocalDate dateCourse = LocalDate.parse(sc.nextLine());
-        System.out.print("priceMoney: ");
-        BigDecimal priceMoney = new BigDecimal(sc.nextLine());
+        BigDecimal priceMoney = null;
+        do {
+            System.out.print("PriceMoney : ");
+            try {
+                priceMoney = new BigDecimal(sc.nextLine());
+                if (priceMoney.compareTo(BigDecimal.ZERO) < 0) {
+                    System.err.println("PriceMoney doit etre >= à 0");
+                }
+            } catch (NumberFormatException e) {
+                System.err.println("entrée invalide");
+                priceMoney = null;
+            }
+        } while (priceMoney == null || priceMoney.compareTo(BigDecimal.ZERO) < 0);
         Course c = courseController.addCourse(new Course(0, nom, km, dateCourse, priceMoney));
-        if (c != null) affMsg("création de :" + c);
-        else affMsg("erreur de création");
+        if (c != null) {
+            affMsg("création de : " + c);
+        } else {
+            affMsg("erreur de création");
+        }
     }
-
     @Override
     public Course selectionner() {
-        update(courseController.getAll());
         int nl = choixListe(lc);
         Course course = lc.get(nl - 1);
         return course;

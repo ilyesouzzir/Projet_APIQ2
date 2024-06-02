@@ -10,6 +10,7 @@ public abstract class CourseAbstractView implements Observer {
 
     protected CourseController courseController;
     protected List<Course> lc;
+    protected PiloteAbstractView pv;
 
     public void setController(CourseController courseController){
         this.courseController = courseController;
@@ -20,7 +21,9 @@ public abstract class CourseAbstractView implements Observer {
     public abstract Course selectionner();
 
     public abstract void menu();
-
+    public void setPiloteView(PiloteAbstractView pv) {
+        this.pv = pv;
+    }
 
     public abstract void affList(List l);
 

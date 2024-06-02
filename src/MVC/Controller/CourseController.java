@@ -66,25 +66,25 @@ public class CourseController {
         return model.vainqueur(course);
     }
 
-    public void addPilote(Pilote pilote) {
-        model.addPilote(pilote);
+    public boolean addPilote(Pilote pilote, Course course) {
+        return model.addPilote(pilote,course);
     }
 
 
-    public void supPilote(Pilote pilote,Course course) {
-        model.supPilote(pilote,course);
+    public boolean supPilote(Pilote pilote,Course course) {
+        return model.supPilote(pilote,course);
     }
 
     public Classement resultat(Pilote pilote, int place, BigDecimal gain, Course course) {
         return model.resultat(pilote, place, gain, course);
     }
 
-    public void modif(Pilote pilote, int place, BigDecimal gain,Course course) {
-        model.modif(pilote, place, gain,course);
+    public boolean modif(Pilote pilote, int place, BigDecimal gain,Course course) {
+       return model.modif(pilote, place, gain,course);
     }
 
-    public List<Pilote> ListePiloteDuPays(Course course,Pays pays) {
-        return model.ListePiloteDuPays(course,pays);
+    public List<Pilote> ListePiloteDuPays(Course course, Pays pays) {
+        return model.ListePiloteDuPays(course, pays);
     }
 
 

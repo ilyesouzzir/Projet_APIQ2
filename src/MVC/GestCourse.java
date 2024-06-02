@@ -42,6 +42,11 @@ public class GestCourse {
         vm.addObserver(vv);
         pym.addObserver(pyv);
 
+
+        cv.setPiloteView(pv);
+
+
+
         List<String> loptions = Arrays.asList("courses", "pilotes", "ville", "pays" ,"fin");
         do {
             int ch = Utilitaire.choixListe(loptions);

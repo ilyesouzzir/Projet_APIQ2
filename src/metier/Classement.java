@@ -61,6 +61,12 @@ public class Classement {
         this.place = place;
         this.gain = gain;
     }
+    public Classement( int place, BigDecimal gain, Pilote pilote) {
+        this.place = place;
+        this.gain = gain;
+        this.Pilote = pilote;
+    }
+
 
     // Getters et setters
 

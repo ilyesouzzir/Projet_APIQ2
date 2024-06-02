@@ -28,13 +28,13 @@ public abstract class DAOCourse extends Subject {
 
     public abstract Pilote vainqueur(Course course);
 
-    public abstract void addPilote(Pilote pilote);
+    public abstract boolean addPilote(Pilote pilote, Course course);
 
-    public abstract void supPilote(Pilote pilote, Course course);
+    public abstract boolean supPilote(Pilote pilote, Course course);
 
     public abstract Classement resultat(Pilote pilote, int place, BigDecimal gain, Course course);
 
-    public abstract void modif(Pilote pilote, int place, BigDecimal gain, Course course);
+    public abstract boolean modif(Pilote pilote, int place, BigDecimal gain, Course course);
 
     public abstract List<Pilote> ListePiloteDuPays(Course course, Pays pays);
 
