@@ -44,6 +44,7 @@ public class GestCourse {
 
 
         cv.setPiloteView(pv);
+        cv.setPaysView(pyv);
 
 
 

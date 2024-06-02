@@ -11,6 +11,7 @@ public abstract class CourseAbstractView implements Observer {
     protected CourseController courseController;
     protected List<Course> lc;
     protected PiloteAbstractView pv;
+    protected PaysAbstractView pyv;
 
     public void setController(CourseController courseController){
         this.courseController = courseController;
@@ -23,6 +24,9 @@ public abstract class CourseAbstractView implements Observer {
     public abstract void menu();
     public void setPiloteView(PiloteAbstractView pv) {
         this.pv = pv;
+    }
+    public void setPaysView(PaysAbstractView pyv) {
+        this.pyv = pyv;
     }
 
     public abstract void affList(List l);

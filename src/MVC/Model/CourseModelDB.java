@@ -234,13 +234,13 @@ public class CourseModelDB extends DAOCourse {
                 System.out.println("La pilote est déjà enregistré dans la course\n");
                 return false;
             } else {
-                pstm1.setInt(1, 0);
+                pstm1.setInt(1, -1);
                 pstm1.setBigDecimal(2, BigDecimal.ZERO);
                 pstm1.setInt(3, pilote.getId_pilote());
                 pstm1.setInt(4, course.getId_course());
                 int n = pstm1.executeUpdate();
                 if (n == 1) {
-                    pstm2.setInt(1, 0);
+                    pstm2.setInt(1, -1);
                     pstm2.setBigDecimal(2, BigDecimal.ZERO);
                     pstm2.setInt(3, pilote.getId_pilote());
                     pstm2.setInt(4, course.getId_course());
@@ -284,7 +284,7 @@ public class CourseModelDB extends DAOCourse {
     @Override
     public Classement resultat(Pilote pilote, int place, BigDecimal gain,Course course) {
         String query1 = "select * from apiclassement where idPilote = ? and idCourse = ?";
-        String query2 = "insert into apiclassement(place, gain, idpilote, idcourse) values (?,?,?,?)";
+        String query2 = "UPDATE apiclassement SET place=?, gain =?  WHERE idPilote = ? and idCourse = ?";
         try (PreparedStatement pstm1 = dbConnect.prepareStatement(query1);
              PreparedStatement pstm2 = dbConnect.prepareStatement(query2)
         ) {

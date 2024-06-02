@@ -26,6 +26,6 @@ public abstract class PaysAbstractView implements Observer {
     @Override
     public void update(List lp) {
         this.lp = lp;
-        affList(lp);
+
     }
 }

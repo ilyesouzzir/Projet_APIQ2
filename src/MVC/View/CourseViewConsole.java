@@ -49,7 +49,7 @@ public class CourseViewConsole extends CourseAbstractView {
     }
 
 
-    private void special(Course c, Pays p) {
+    private void special(Course c) {
 
         do {
             int choix = choixListe(Arrays.asList("Liste des pilotes avec place et gain", "Gain total de la course",
@@ -58,16 +58,16 @@ public class CourseViewConsole extends CourseAbstractView {
                     "Menu principal de course")
             );
             switch (choix) {
-                //case 1 -> listePilotePlaceGain2(c);
-                //case 2 -> gainTotal2(c);
-                //case 3 -> ListePaysPilotes2(c);
-                 //case 4 -> vainqueur2(c);
-               case 5 -> addPilote2(c);
-                case 6 -> supPilote2( c);
+                case 1 -> listePilotePlaceGain2(c);
+                case 2 -> gainTotal2(c);
+                case 3 -> ListePaysPilotes2(c);
+                case 4 -> vainqueur2(c);
+                case 5 -> addPilote2(c);
+                case 6 -> supPilote2(c);
                 case 7 -> resultat2(c);
-                //case 8 -> modif2(c);
-                case 9 -> ListePiloteDuPays2(c,p);
-                //case 10 -> Classementcomplet2(c);
+                case 8 -> modif2(c);
+                case 9 -> ListePiloteDuPays2(c);
+                case 10 -> Classementcomplet2(c);
             }
         } while (true);
     }
@@ -142,8 +142,10 @@ public class CourseViewConsole extends CourseAbstractView {
         }
     }
 
-    private void ListePiloteDuPays2(Course c,Pays p) {
-        List<Pilote> lp = courseController.ListePiloteDuPays(c,p);
+    private void ListePiloteDuPays2(Course c) {
+        System.out.println("Entrez l'ID Du pays : ");
+        Pays p = pyv.selectionner();
+        List<Pilote> lp = courseController.ListePiloteDuPays(c, p);
         if (lp.isEmpty()) {
             affMsg("aucun pilote");
         } else {
@@ -151,6 +153,7 @@ public class CourseViewConsole extends CourseAbstractView {
             affList(lp);
         }
     }
+
     public void modif2(Course c) {
         Pilote p = pv.selectionner();
 
@@ -165,6 +168,7 @@ public class CourseViewConsole extends CourseAbstractView {
             affMsg("Problème lors de la modification\n");
         }
     }
+
     public void resultat2(Course c) {
         Pilote p = pv.selectionner();
         System.out.println("Place : ");
@@ -209,7 +213,7 @@ public class CourseViewConsole extends CourseAbstractView {
         if (course == null) affMsg("recherche infructueuse");
         else {
             affMsg(course.toString());
-            special(course, null);
+            special(course);
         }
     }
 
@@ -255,6 +259,7 @@ public class CourseViewConsole extends CourseAbstractView {
             affMsg("erreur de création");
         }
     }
+
     @Override
     public Course selectionner() {
         int nl = choixListe(lc);
