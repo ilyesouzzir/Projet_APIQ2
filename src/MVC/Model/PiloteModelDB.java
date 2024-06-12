@@ -135,6 +135,24 @@ public class PiloteModelDB extends DAOPilote {
         }
     }
 
+    public int getTotalGains(int idPilote){
+        String query = "SELECT SUM(Cl.GAIN) as totalGains FROM APICLASSEMENT Cl JOIN APICOURSE C ON C.IDCOURSE = CL.IDCOURSE  WHERE CL.IDPILOTE = ?";
+        try(PreparedStatement pstm = dbConnect.prepareStatement(query)) {
+            pstm.setInt(1, idPilote);
+            ResultSet rs = pstm.executeQuery();
+            if(rs.next()){
+                int p= rs.getInt("totalGains");
+                return p;
+            }
+            else {
+                return 0;
+            }
+        } catch (SQLException e) {
+            System.err.println("erreur sql :" + e);
+            return 0;
+        }
+    }
+
     @Override
     public List<Pilote> getNotification() {
         return getPilotes();

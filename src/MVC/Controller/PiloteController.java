@@ -42,4 +42,8 @@ public class PiloteController {
             this.view.setController(this);
         }
     }
+
+    public int getTotalGains(int idPilote) {
+        return model.getTotalGains(idPilote);
+    }
 }

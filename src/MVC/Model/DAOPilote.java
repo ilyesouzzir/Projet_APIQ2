@@ -14,5 +14,6 @@ public abstract class DAOPilote extends Subject {
     public abstract Pilote readPilote(int idPilote);
 
     public abstract List<Pilote> getPilotes();
+    public  abstract int getTotalGains(int idPilote);
 
 }

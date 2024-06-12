@@ -21,7 +21,7 @@ public class PiloteViewConsole extends PiloteAbstractView {
     public void menu() {
         update(piloteController.getAll());
         do {
-            int ch = choixListe(Arrays.asList("ajouter un pilote", "supprimer un pilote", "rechercher un pilote", "mettre à jour un pilote", "lister les pilotes", "menu principal"));
+            int ch = choixListe(Arrays.asList("ajouter un pilote", "supprimer un pilote", "rechercher un pilote", "mettre à jour un pilote", "lister les pilotes","Gain total d'un pilote toutes courses confondues", "menu principal"));
             switch (ch) {
                 case 1:
                     update(piloteController.getAll());
@@ -40,6 +40,8 @@ public class PiloteViewConsole extends PiloteAbstractView {
                     modifier();
                     break;
                 case 5:affList(piloteController.getAll());
+                break;
+                case 6: getTotalGains();
                     return;
             }
         } while (true);
@@ -51,6 +53,12 @@ public class PiloteViewConsole extends PiloteAbstractView {
         affListe(l);
     }
 
+    private void getTotalGains(){
+        System.out.println("Veuillez entrer l'ID du pilote pour obtenir le total des gains : ");
+        int idPilote = sc.nextInt();
+        int totalGains = piloteController.getTotalGains(idPilote);
+        System.out.println("Le total des gains pour le pilote avec l'ID " + idPilote + " est : " + totalGains);
+    }
     private void modifier() {
         System.out.println("Veuillez entrer l'ID du pilote à modifier : ");
         int nl = choixElt(lp) - 1;

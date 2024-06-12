@@ -5,6 +5,7 @@ import MVC.Model.DAOVille;
 
 import MVC.View.CourseAbstractView;
 import MVC.View.VilleAbstractView;
+import metier.Pilote;
 import metier.Ville;
 
 
@@ -45,4 +46,7 @@ public class VilleController {
             this.view.setController(this);
         }
     }
+   public List<Pilote> getPilotesSansDoublon(int idville){
+        return model.getPilotesSansDoublon(idville);
+   }
 }

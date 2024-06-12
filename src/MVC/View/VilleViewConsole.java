@@ -1,6 +1,7 @@
 package MVC.View;
 
 import MVC.View.VilleAbstractView;
+import metier.Pilote;
 import metier.Ville;
 import static utilitaires.Utilitaire.*;
 
@@ -20,7 +21,7 @@ public class VilleViewConsole extends VilleAbstractView {
     public void menu() {
         update(villeController.getAll());
         do {
-            int ch = choixListe(Arrays.asList("ajouter une ville", "supprimer une ville", "rechercher une ville", "mettre à jour une ville", "lister les villes", "menu principal"));
+            int ch = choixListe(Arrays.asList("ajouter une ville", "supprimer une ville", "rechercher une ville", "mettre à jour une ville","pilote sans doublon qui ont effectué une course", "menu principal"));
             switch (ch) {
                 case 1:
                     ajouter();
@@ -34,12 +35,27 @@ public class VilleViewConsole extends VilleAbstractView {
                 case 4:
                     modifier();
                     break;
-                case 5:
+                case 5: PiloteSansDoublon();
                     return;
             }
         } while (true);
     }
 
+
+    private List<Pilote> PiloteSansDoublon(){
+        System.out.println("Veuillez entrer l'ID de la ville pour laquelle vous voulez trouver les pilotes : ");
+        int idVille = sc.nextInt();
+        List<Pilote> pilotes = villeController.getPilotesSansDoublon(idVille);
+        if(pilotes.isEmpty()) {
+            System.out.println("Aucun pilote n'a effectué une course dans cette ville.");
+        } else {
+            System.out.println("Les pilotes qui ont effectué une course dans cette ville sont : ");
+            for (Pilote pilote : pilotes) {
+                System.out.println(pilote.toString());
+            }
+        }
+        return pilotes;
+    }
 
     @Override
     public void affList(List l) {

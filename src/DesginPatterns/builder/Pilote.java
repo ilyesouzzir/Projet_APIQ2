@@ -40,9 +40,16 @@ public class Pilote {
     /**
      * Liste des pilotes associés à ce pilote.
      */
-    protected List<Pilote> listePilotes = new ArrayList<Pilote>();
+    protected List<DesginPatterns.builder.Pilote> listePilotes = new ArrayList<DesginPatterns.builder.Pilote>();
+    protected String langue;
 
-    public Pilote() {
+    public Pilote(int id_pilote, String matricule, String nom, String prenom, LocalDate datenaiss, String langue) {
+        this.id_pilote = id_pilote;
+        this.matricule = matricule;
+        this.nom = nom;
+        this.prenom = prenom;
+        this.datenaiss = datenaiss;
+        this.langue = langue;
     }
 
     public Pilote(int id_pilote, String matricule, String nom, String prenom, LocalDate datenaiss) {
@@ -52,6 +59,14 @@ public class Pilote {
         this.prenom = prenom;
         this.datenaiss = datenaiss;
 
+    }
+
+    public String getLangue() {
+        return langue;
+    }
+
+    public void setLangue(String langue) {
+        this.langue = langue;
     }
 
     /**
@@ -153,7 +168,7 @@ public class Pilote {
     /**
      * Méthode getter pour récupérer la liste des pilotes.
      */
-    public List<Pilote> getListePilotes() {
+    public List<DesginPatterns.builder.Pilote> getListePilotes() {
         return listePilotes;
     }
 
@@ -162,7 +177,7 @@ public class Pilote {
      *
      * @param listePilotes La nouvelle liste des pilotes.
      */
-    public void setListePilotes(List<Pilote> listePilotes) {
+    public void setListePilotes(List<DesginPatterns.builder.Pilote> listePilotes) {
         this.listePilotes = listePilotes;
     }
 
@@ -185,7 +200,7 @@ public class Pilote {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Pilote pilote = (Pilote) o;
+        DesginPatterns.builder.Pilote pilote = (DesginPatterns.builder.Pilote) o;
         return id_pilote == pilote.id_pilote;
     }
 
@@ -193,5 +208,63 @@ public class Pilote {
     public int hashCode() {
         return Objects.hash(id_pilote);
     }
+
+    public static class PiloteBuilder {
+        private int id_pilote;
+        private String matricule;
+        private String nom;
+        private String prenom;
+        private LocalDate datenaiss;
+        private Pays pays;
+        private String langue;
+
+        public PiloteBuilder setId_pilote(int id_pilote) {
+            this.id_pilote = id_pilote;
+            return this;
+        }
+
+        public PiloteBuilder setMatricule(String matricule) {
+            this.matricule = matricule;
+            return this;
+        }
+
+        public PiloteBuilder setNom(String nom) {
+            this.nom = nom;
+            return this;
+        }
+
+        public PiloteBuilder setPrenom(String prenom) {
+            this.prenom = prenom;
+            return this;
+        }
+
+        public PiloteBuilder setDateNaiss(LocalDate datenaiss) {
+            this.datenaiss = datenaiss;
+            return this;
+        }
+
+        public PiloteBuilder setPays(Pays pays) {
+            this.pays = pays;
+            return this;
+        }
+
+        public PiloteBuilder setLangue(String langue) {
+            this.langue = langue;
+            return this;
+        }
+
+        public Pilote build() throws Exception {
+            if (pays == null) {
+                throw new Exception("Le pays ne peut pas être nul");
+            }
+            if (!langue.equals(pays.getLangue())) {
+                throw new Exception("La langue du pilote doit être celle de son pays");
+            }
+            Pilote pilote = new Pilote(id_pilote, matricule, nom, prenom, datenaiss, langue);
+            pilote.setPays(pays);
+            return pilote;
+        }
+    }
+
 
 }
